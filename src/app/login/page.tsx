@@ -7,10 +7,25 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Mail, Lock, Eye, ArrowRight, Stethoscope } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useLanguage } from "@/components/language-provider"
 
 export default function LoginPage() {
     const { t } = useLanguage()
+    const router = useRouter()
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault()
+        // Simulate checking clinic type after authentication
+        // In a real app, this would come from your auth provider or database
+        const clinicType = localStorage.getItem("clinicType") || "single"
+
+        if (clinicType === "single") {
+            router.push("/dashboard/single-clinic")
+        } else if (clinicType === "multi") {
+            router.push("/dashboard/multi-clinic")
+        }
+    }
 
     return (
         <div className="min-h-screen bg-[#0a0f1c] text-white flex flex-col font-sans selection:bg-[#13a4ec]/30">
@@ -56,7 +71,7 @@ export default function LoginPage() {
                             <p className="text-gray-400 font-medium">Access your clinic&apos;s WhatsApp dashboard.</p>
                         </div>
 
-                        <form className="space-y-8">
+                        <form className="space-y-8" onSubmit={handleLogin}>
                             <div className="space-y-2.5">
                                 <Label htmlFor="email" className="text-xs font-black text-gray-500 uppercase tracking-[0.1em]">{t("loginPage.emailLabel")}</Label>
                                 <div className="relative group">
