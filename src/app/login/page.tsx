@@ -9,23 +9,52 @@ import { Label } from "@/components/ui/label"
 import { Mail, Lock, Eye, ArrowRight, Stethoscope } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useLanguage } from "@/components/language-provider"
+import { supabase } from "@/lib/supabase";
+import { useState } from "react"
 
 export default function LoginPage() {
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
     const { t } = useLanguage()
     const router = useRouter()
 
-    const handleLogin = (e: React.FormEvent) => {
+
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Simulate checking clinic type after authentication
-        // In a real app, this would come from your auth provider or database
-        const clinicType = localStorage.getItem("clinicType") || "single"
+        setLoading(true)
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+
+        setLoading(false)
+
+        if (error) {
+            console.log("Login error:", error.message)
+            return
+        }
+
+        const user = data.user
+
+        // مثال: تحديد نوع العيادة من قاعدة البيانات (اختياري)
+        const { data: profile } = await supabase
+            .from("profiles")
+            .select("clinicType")
+            .eq("id", user.id)
+            .single()
+
+        const clinicType = profile?.clinicType || "single"
 
         if (clinicType === "single") {
             router.push("/dashboard/single-clinic")
-        } else if (clinicType === "multi") {
+        } else {
             router.push("/dashboard/multi-clinic")
         }
     }
+
 
     return (
         <div className="min-h-screen bg-[#0a0f1c] text-white flex flex-col font-sans selection:bg-[#13a4ec]/30">
@@ -71,7 +100,7 @@ export default function LoginPage() {
                             <p className="text-gray-400 font-medium">Access your clinic&apos;s WhatsApp dashboard.</p>
                         </div>
 
-                        <form className="space-y-8" onSubmit={handleLogin}>
+                        <form className="space-y-8" onSubmit={(e) => handleLogin(e)}>
                             <div className="space-y-2.5">
                                 <Label htmlFor="email" className="text-xs font-black text-gray-500 uppercase tracking-[0.1em]">{t("loginPage.emailLabel")}</Label>
                                 <div className="relative group">
@@ -79,6 +108,8 @@ export default function LoginPage() {
                                     <Input
                                         id="email"
                                         type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                         placeholder={t("loginPage.emailPlaceholder")}
                                         className="bg-[#0a0f1c]/80 border-white/5 pl-12 h-14 rounded-2xl text-white focus:ring-2 focus:ring-[#13a4ec]/20 focus:border-[#13a4ec]/40 placeholder:text-gray-700 transition-all font-medium"
                                     />
@@ -97,6 +128,8 @@ export default function LoginPage() {
                                     <Input
                                         id="password"
                                         type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                         className="bg-[#0a0f1c]/80 border-white/5 pl-12 h-14 rounded-2xl text-white focus:ring-2 focus:ring-[#13a4ec]/20 focus:border-[#13a4ec]/40 transition-all font-medium"
                                     />
                                     <Eye className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 cursor-pointer hover:text-white transition-colors" />
@@ -123,8 +156,8 @@ export default function LoginPage() {
                             <div className="relative h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                             <div className="flex flex-col items-center gap-4">
                                 <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">{t("loginPage.newTo")}</p>
-                                <Button variant="outline" className="w-full h-14 border-white/10 bg-transparent text-gray-200 font-bold rounded-2xl hover:bg-white/5 hover:border-white/20 transition-all">
-                                    {t("loginPage.register")}
+                                <Button disabled={loading}>
+                                    {loading ? "Logging in..." : t("loginPage.signIn")}
                                 </Button>
                             </div>
                         </div>

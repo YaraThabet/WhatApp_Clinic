@@ -1,5 +1,7 @@
-import SingleClinicDashboard from "@/components/dashboards/SingleClinicDashboard";
+"use client"
+
+import DashboardOverview from "@/components/dashboard/DashboardOverview";
 
 export default function SingleClinicDashboardPage() {
-    return <SingleClinicDashboard />;
+    return <DashboardOverview />;
 }

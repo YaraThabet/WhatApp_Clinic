@@ -204,7 +204,8 @@ export const translations: Record<Language, any> = {
                 name: 'Clinic Name',
                 specialty: 'Primary Specialty',
                 address: 'Clinic Address',
-                city: 'City & Country',
+                Country: 'Country',
+                city: 'City',
                 phone: 'Clinic Phone Number',
                 website: 'Website (Optional)'
             },
@@ -270,12 +271,20 @@ export const translations: Record<Language, any> = {
             recentPatients: "Recent Patients",
             recentPatientsDesc: "Latest registered or visited patients",
             viewAllPatients: "View All Patients",
+            myPatients: "My Patients",
+            myPatientsDesc: "Recent patients assigned to you",
+            visitType: "Visit Type",
+            startSession: "Start Session",
+            addNote: "Add Note",
+            weeklySchedule: "Weekly Schedule",
+            weeklyScheduleDesc: "Your appointments for the week",
             statsLabels: {
                 totalDoctors: "Total Doctors",
                 totalPatients: "Total Patients",
                 todayAppointments: "Today's Appointments",
                 completedVisits: "Completed Visits",
-                revenueToday: "Revenue Today"
+                revenueToday: "Revenue Today",
+                pendingAppointments: "Pending Appointments"
             },
             mock: {
                 thisMonth: "This Month",
@@ -328,6 +337,55 @@ export const translations: Record<Language, any> = {
                 phoneNumber: "PHONE NUMBER",
                 lastVisit: "LAST VISIT",
                 actions: "ACTIONS"
+            },
+            doctorsManagement: {
+                title: "Doctors Management",
+                description: "Manage your clinic's doctors, view their status and quick stats.",
+                addDoctor: "Add Doctor",
+                filter: "Filter",
+                table: {
+                    doctorName: "DOCTOR NAME",
+                    specialty: "SPECIALTY",
+                    patients: "PATIENTS",
+                    appointments: "APPOINTMENTS",
+                    status: "STATUS",
+                    actions: "ACTIONS"
+                },
+                status: {
+                    active: "Active",
+                    inactive: "Inactive",
+                    onLeave: "On Leave"
+                }
+            },
+            patientsManagement: {
+                title: "Patients Management",
+                description: "View and manage your clinic's patient records and history.",
+                searchPlaceholder: "Search by name or phone...",
+                filterAll: "All",
+                filterActive: "Active",
+                filterInactive: "Inactive",
+                table: {
+                    name: "PATIENT NAME",
+                    phone: "PHONE NUMBER",
+                    visits: "VISITS",
+                    lastVisit: "LAST VISIT",
+                    status: "STATUS",
+                    actions: "ACTIONS"
+                },
+                details: {
+                    totalVisits: "Total Visits",
+                    totalAppointments: "Total Appointments",
+                    cancelledAppointments: "Cancelled",
+                    tabs: {
+                        appointments: "Appointments",
+                        doctors: "Doctors",
+                        notes: "Notes"
+                    },
+                    noNotes: "No notes available",
+                    addNote: "Add Note",
+                    notePlaceholder: "Write a new note for this patient...",
+                    whatsappMessage: "Hello, this is CuraClinic reaching out regarding your health record."
+                }
             }
         }
     },
@@ -534,7 +592,8 @@ export const translations: Record<Language, any> = {
                 name: 'اسم العيادة',
                 specialty: 'التخصص الأساسي',
                 address: 'عنوان العيادة',
-                city: 'المدينة والبلد',
+                Country: 'الدولة ',
+                city: 'مدينة ',
                 phone: 'رقم هاتف العيادة',
                 website: 'الموقع الإلكتروني (اختياري)'
             },
@@ -600,12 +659,20 @@ export const translations: Record<Language, any> = {
             recentPatients: "المرضى الأخيرون",
             recentPatientsDesc: "آخر المرضى المسجلين أو الذين تمت زيارتهم",
             viewAllPatients: "عرض جميع المرضى",
+            myPatients: "المرضى الخاصين بي",
+            myPatientsDesc: "أحدث المرضى المعينين لك",
+            visitType: "نوع الزيارة",
+            startSession: "بدء الجلسة",
+            addNote: "إضافة ملاحظة",
+            weeklySchedule: "الجدول الأسبوعي",
+            weeklyScheduleDesc: "مواعيدك لهذا الأسبوع",
             statsLabels: {
                 totalDoctors: "إجمالي الأطباء",
                 totalPatients: "إجمالي المرضى",
                 todayAppointments: "مواعيد اليوم",
                 completedVisits: "الزيارات المكتملة",
-                revenueToday: "إيرادات اليوم"
+                revenueToday: "إيرادات اليوم",
+                pendingAppointments: "المواعيد قيد الانتظار"
             },
             mock: {
                 thisMonth: "هذا الشهر",
@@ -658,6 +725,55 @@ export const translations: Record<Language, any> = {
                 phoneNumber: "رقم الهاتف",
                 lastVisit: "آخر زيارة",
                 actions: "الإجراءات"
+            },
+            doctorsManagement: {
+                title: "إدارة الأطباء",
+                description: "إدارة أطباء العيادة ومتابعة حالاتهم وملخص الإحصائيات.",
+                addDoctor: "إضافة طبيب",
+                filter: "تصفية",
+                table: {
+                    doctorName: "اسم الطبيب",
+                    specialty: "التخصص",
+                    patients: "المرضى",
+                    appointments: "المواعيد",
+                    status: "الحالة",
+                    actions: "الإجراءات"
+                },
+                status: {
+                    active: "نشط",
+                    inactive: "غير نشط",
+                    onLeave: "في إجازة"
+                }
+            },
+            patientsManagement: {
+                title: "إدارة المرضى",
+                description: "عرض وإدارة سجلات المرضى وتاريخهم الطبي في عيادتك.",
+                searchPlaceholder: "ابحث بالاسم أو رقم الهاتف...",
+                filterAll: "الكل",
+                filterActive: "نشط",
+                filterInactive: "غير نشط",
+                table: {
+                    name: "اسم المريض",
+                    phone: "رقم الهاتف",
+                    visits: "الزيارات",
+                    lastVisit: "آخر زيارة",
+                    status: "الحالة",
+                    actions: "الإجراءات"
+                },
+                details: {
+                    totalVisits: "إجمالي الزيارات",
+                    totalAppointments: "إجمالي المواعيد",
+                    cancelledAppointments: "الملغاة",
+                    tabs: {
+                        appointments: "المواعيد",
+                        doctors: "الأطباء",
+                        notes: "الملاحظات"
+                    },
+                    noNotes: "لا توجد ملاحظات متاحة",
+                    addNote: "إضافة ملاحظة",
+                    notePlaceholder: "اكتب ملاحظة جديدة لهذا المريض...",
+                    whatsappMessage: "مرحباً، نحن من CuraClinic نتواصل معك بخصوص سجلك الصحي."
+                }
             }
         }
     }

@@ -36,6 +36,7 @@ import { translations, Language } from '@/locales/translations';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { PricingSection } from '@/components/PricingSection';
+import { supabase } from "@/lib/supabase";
 
 const FeatureCard = ({ icon: Icon, title, description, delay, darkMode }: { icon: any, title: string, description: string, delay: number, darkMode: boolean }) => (
 
@@ -68,6 +69,7 @@ const BenefitItem = ({ text, darkMode }: { text: string, darkMode: boolean }) =>
   </div>
 );
 
+
 export default function HomePage() {
   const [currentView, setCurrentView] = useState('home');
   const [darkMode, setDarkMode] = useState(true);
@@ -85,6 +87,17 @@ export default function HomePage() {
     document.documentElement.dir = translations[language].dir;
     document.documentElement.lang = language;
   }, [language]);
+
+  useEffect(() => {
+    const test = async () => {
+      const { data, error } = await supabase.from("clinics").select("*");
+
+      console.log("DATA:", data);
+      console.log("ERROR:", error);
+    };
+
+    test();
+  }, []);
 
   const t = translations[language];
 
@@ -190,11 +203,8 @@ export default function HomePage() {
               <div className={`relative rounded-3xl border p-4 backdrop-blur-sm ${darkMode ? 'border-white/10 bg-slate-900/50' : 'border-slate-200 bg-white'
                 }`}>
                 <div className={`aspect-[4/3] rounded-2xl overflow-hidden relative ${darkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
-                  <img
-                    src="https://picsum.photos/seed/clinic-dashboard/1200/900"
-                    alt="CuraAI Dashboard"
-                    className={`w-full h-full object-cover opacity-60 ${darkMode ? 'mix-blend-luminosity' : ''}`}
-                    referrerPolicy="no-referrer"
+                  <div
+                    className={`w-full h-full opacity-60 bg-gradient-to-br from-blue-500/20 via-indigo-500/20 to-emerald-500/20 ${darkMode ? 'mix-blend-luminosity' : ''}`}
                   />
                   {/* Floating Elements */}
                   <div className="absolute top-6 left-6 right-6 flex justify-between items-start">

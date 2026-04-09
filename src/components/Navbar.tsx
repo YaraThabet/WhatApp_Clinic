@@ -13,13 +13,15 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { translations, Language } from '@/locales/translations';
 
-export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, language, setLanguage }: {
+export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, language, setLanguage, login, setLogin }: {
     currentView: string,
     setCurrentView: (v: string) => void,
     darkMode: boolean,
     setDarkMode: (v: boolean) => void,
     language: Language,
     setLanguage: (l: Language) => void
+    login: boolean,
+    setLogin: (l: boolean) => void
 }) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -69,8 +71,7 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
                             <a href="#how-it-works" className={`text-sm font-medium ${textColor} transition-colors`}>{t.nav.howItWorks}</a>
                             <a href="#pricing" className={`text-sm font-medium ${textColor} transition-colors`}>{t.nav.pricing}</a>
                         </>
-                    )}<div className={`min-h-screen pt-24 ${darkMode ? 'bg-slate-950 text-slate-200' : 'bg-slate-50 text-slate-900'}`} dir={t.dir}></div>
-
+                    )}
                     <div className="flex items-center gap-4 border-l border-slate-200 dark:border-white/10 pl-8 rtl:border-l-0 rtl:border-r rtl:pl-0 rtl:pr-8">
                         <button
                             onClick={() => setDarkMode(!darkMode)}
@@ -90,7 +91,9 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
                         >
                             {t.nav.getStarted}
                         </button>
-                        <button className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
+                        <button
+                            onClick={() => setCurrentView('login')}
+                            className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
                             {t.nav.login}
                         </button>
                     </div>
@@ -124,7 +127,8 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
                             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                             {darkMode ? t.settings.switchToLight : t.settings.switchToDark}
                         </button>
-                        <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-center font-semibold text-lg">
+                        <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-center font-semibold text-lg"   >
+                            <link href='/login' />
                             {t.nav.login}
                         </button>
                     </motion.div>
