@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { Mail, Lock, Eye, ArrowRight, Stethoscope } from "lucide-react"
+import { Mail, Lock, ArrowRight, Stethoscope } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useLanguage } from "@/components/language-provider"
 import { supabase } from "@/lib/supabase";
@@ -15,6 +15,7 @@ import { useState } from "react"
 export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [errorMsg, setErrorMsg] = useState("")
     const [loading, setLoading] = useState(false)
     const { t } = useLanguage()
     const router = useRouter()
@@ -33,17 +34,20 @@ export default function LoginPage() {
         setLoading(false)
 
         if (error) {
-            console.log("Login error:", error.message)
+            setErrorMsg(error.message)
             return
         }
-
+        if (!data?.user) {
+            setErrorMsg("Something went wrong")
+            return
+        }
         const user = data.user
 
         // مثال: تحديد نوع العيادة من قاعدة البيانات (اختياري)
         const { data: profile } = await supabase
             .from("profiles")
             .select("clinicType")
-            .eq("id", user.id)
+            .eq("user_id", user.id)
             .single()
 
         const clinicType = profile?.clinicType || "single"
@@ -58,8 +62,24 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen bg-[#0a0f1c] text-white flex flex-col font-sans selection:bg-[#13a4ec]/30">
+            {/* Header / Back Navigation */}
+            <header className="px-6 md:px-12 py-6 flex items-center justify-between">
+                <Link
+                    href="/"
+                    className="flex items-center gap-2 text-gray-400 hover:text-white transition-all group font-bold"
+                >
+                    <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-[#13a4ec]/20 transition-colors">
+                        <ArrowRight className="w-4 h-4 rotate-180" />
+                    </div>
+                    <span>Home</span>
+                </Link>
 
-            {/* Main Content */}
+                <div className="flex items-center gap-3 text-xl font-bold tracking-tight text-white/90">
+                    <div className="w-8 h-8 bg-[#13a4ec] rounded-lg flex items-center justify-center shadow-lg shadow-[#13a4ec]/20">
+                        <Stethoscope className="text-white w-4.5 h-4.5" />
+                    </div>
+                </div>
+            </header>
             <main className="flex-1 flex items-center justify-center p-4 md:p-8">
                 <div className="max-w-[1100px] w-full bg-[#111827]/60 border border-white/5 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden flex flex-col md:flex-row shadow-[0_32px_120px_rgba(0,0,0,0.6)] backdrop-blur-xl">
 
@@ -119,7 +139,7 @@ export default function LoginPage() {
                             <div className="space-y-2.5">
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="password" className="text-xs font-black text-gray-500 uppercase tracking-[0.1em]">{t("loginPage.passwordLabel")}</Label>
-                                    <Link href="#" className="text-xs font-bold text-[#137fec] hover:underline decoration-2 underline-offset-4 tracking-tight">
+                                    <Link href="/forgot-password" className="text-xs font-bold text-[#137fec] hover:underline decoration-2 underline-offset-4 tracking-tight">
                                         {t("loginPage.forgotPassword")}
                                     </Link>
                                 </div>
@@ -132,7 +152,6 @@ export default function LoginPage() {
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="bg-[#0a0f1c]/80 border-white/5 pl-12 h-14 rounded-2xl text-white focus:ring-2 focus:ring-[#13a4ec]/20 focus:border-[#13a4ec]/40 transition-all font-medium"
                                     />
-                                    <Eye className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 cursor-pointer hover:text-white transition-colors" />
                                 </div>
                             </div>
 
@@ -145,22 +164,14 @@ export default function LoginPage() {
                                     {t("loginPage.rememberMe")}
                                 </label>
                             </div>
-
-                            <Button className="w-full h-16 bg-[#13a4ec] hover:bg-[#13a4ec]/90 text-white font-black text-lg rounded-[1.25rem] shadow-[0_20px_40px_rgba(19,164,236,0.3)] transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center gap-3">
+                            {errorMsg && (
+                                <p className="text-red-500 text-sm">{errorMsg}</p>
+                            )}
+                            <Button disabled={loading} className="w-full h-16 bg-[#13a4ec] hover:bg-[#13a4ec]/90 text-white font-black text-lg rounded-[1.25rem] shadow-[0_20px_40px_rgba(19,164,236,0.3)] transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center gap-3">
                                 {t("loginPage.signIn")}
                                 <ArrowRight className="h-6 w-6 stroke-[3]" />
                             </Button>
                         </form>
-
-                        <div className="space-y-6 pt-6 opacity-80">
-                            <div className="relative h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                            <div className="flex flex-col items-center gap-4">
-                                <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">{t("loginPage.newTo")}</p>
-                                <Button disabled={loading}>
-                                    {loading ? "Logging in..." : t("loginPage.signIn")}
-                                </Button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </main>
