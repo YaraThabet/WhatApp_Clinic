@@ -161,7 +161,7 @@ export const translations: Record<Language, any> = {
             },
             cta: {
                 title: 'Ready to start?',
-                description: 'Join thousands of medical clinics already using CuraAI.',
+                description: 'Join thousands of medical clinics already using WhatApp Clinic.',
                 getStarted: 'Get Started Now',
                 contactSales: 'Contact Sales'
             },
@@ -384,7 +384,7 @@ export const translations: Record<Language, any> = {
                     noNotes: "No notes available",
                     addNote: "Add Note",
                     notePlaceholder: "Write a new note for this patient...",
-                    whatsappMessage: "Hello, this is CuraClinic reaching out regarding your health record."
+                    whatsappMessage: "Hello, this is WhatApp Clinic reaching out regarding your health record."
                 }
             }
         }
@@ -772,7 +772,7 @@ export const translations: Record<Language, any> = {
                     noNotes: "لا توجد ملاحظات متاحة",
                     addNote: "إضافة ملاحظة",
                     notePlaceholder: "اكتب ملاحظة جديدة لهذا المريض...",
-                    whatsappMessage: "مرحباً، نحن من CuraClinic نتواصل معك بخصوص سجلك الصحي."
+                    whatsappMessage: "مرحباً، نحن من WhatApp Clinic نتواصل معك بخصوص سجلك الصحي."
                 }
             }
         }

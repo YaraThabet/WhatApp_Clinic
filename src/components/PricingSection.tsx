@@ -20,19 +20,15 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
 
   // Map icons to plans
   const getPlanIcon = (name: string) => {
-    const n = name.toLowerCase();
-    if (n.includes('starter') || n.includes('بداية')) return <Rocket className="w-5 h-5 text-blue-500" />;
-    if (n.includes('pro') || n.includes('برو')) return <Crown className="w-5 h-5 text-amber-500" />;
-    if (n.includes('enterprise') || n.includes('مؤسسات')) return <Zap className="w-5 h-5 text-purple-500" />;
     return <Star className="w-5 h-5 text-blue-500" />;
   }
 
   return (
-    <section id="pricing" className={`py-24 relative overflow-hidden ${darkMode ? 'bg-slate-950' : 'bg-white'}`}>
+    <section id="pricing" className="py-24 relative overflow-hidden bg-background">
       {/* Dynamic Background Decorations */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-20">
-        <div className={`absolute top-[10%] left-[-20%] w-[50%] h-[50%] blur-[160px] rounded-full ${darkMode ? 'bg-blue-600/30' : 'bg-blue-400/10'}`} />
-        <div className={`absolute bottom-[-10%] right-[-20%] w-[50%] h-[50%] blur-[160px] rounded-full ${darkMode ? 'bg-indigo-600/30' : 'bg-indigo-400/10'}`} />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-30">
+        <div className="absolute top-[10%] left-[-20%] w-[50%] h-[50%] blur-[160px] rounded-full bg-primary-base/10" />
+        <div className="absolute bottom-[-10%] right-[-20%] w-[50%] h-[50%] blur-[160px] rounded-full bg-primary-base/5" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -41,8 +37,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-wider mb-6 ${darkMode ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-blue-50 border-blue-100 text-blue-600'
-              }`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary-base/20 bg-primary-soft text-xs font-bold uppercase tracking-wider mb-6 text-primary-base"
           >
             {t.landing.pricing.title}
           </motion.div>
@@ -50,7 +45,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className={`text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}
+            className="text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight text-heading"
           >
             {t.landing.pricing.title}
           </motion.h2>
@@ -58,7 +53,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className={`text-lg lg:text-xl max-w-2xl mx-auto ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}
+            className="text-lg lg:text-xl max-w-2xl mx-auto text-text-secondary"
           >
             {t.landing.pricing.description}
           </motion.p>
@@ -75,35 +70,35 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -5 }}
-                className={`relative flex flex-col items-center text-center p-8 rounded-[2rem] border transition-all duration-300 group ${isPro
-                  ? (darkMode ? 'bg-slate-900/60 border-blue-500/50 shadow-2xl shadow-blue-500/10 backdrop-blur-md' : 'bg-white border-blue-500/50 shadow-2xl shadow-blue-500/10')
-                  : (darkMode ? 'bg-slate-900/40 border-white/10 hover:border-white/20 hover:bg-slate-900/60' : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm')
+                whileHover={{ y: -8 }}
+                className={`relative flex flex-col items-center text-center p-8 lg:p-10 rounded-[2.5rem] border transition-all duration-500 group ${isPro
+                  ? 'bg-card-elevated border-primary-base/50 shadow-2xl shadow-primary-base/20 backdrop-blur-md scale-105 z-10'
+                  : 'bg-card border-border hover:border-primary-base/30 shadow-medical hover:shadow-xl'
                   }`}
               >
                 {isPro && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-lg z-20">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-lg z-20">
                     <Star className="w-3 h-3 fill-current" />
                     {t.landing.pricing.mostPopular}
                   </div>
                 )}
 
                 <div className="mb-10 w-full flex flex-col items-center">
-                  <div className="flex items-center justify-center gap-3 mb-6">
-                    <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-white/5' : 'bg-slate-100'}`}>
+                  <div className="flex items-center justify-center gap-3 mb-8">
+                    <div className="p-3 rounded-2xl bg-secondary group-hover:bg-primary-soft transition-colors duration-300">
                       {getPlanIcon(plan.name)}
                     </div>
-                    <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                    <h3 className="text-2xl font-bold text-heading">
                       {plan.name}
                     </h3>
                   </div>
 
                   <div className={`flex items-baseline justify-center gap-1 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
-                    <span className={`text-5xl font-black tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                    <span className="text-5xl font-black tracking-tight text-heading">
                       {plan.price}
                     </span>
                     {plan.price !== 'Custom' && plan.price !== 'مخصص' && (
-                      <span className={`text-base font-medium ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+                      <span className="text-base font-medium text-text-muted">
                         {t.landing.pricing.perMonth}
                       </span>
                     )}
@@ -127,9 +122,9 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
 
                 <button
                   onClick={() => onSelectPlan?.(plan.name)}
-                  className={`w-full py-4 rounded-2xl font-bold text-lg transition-all transform active:scale-[0.98] ${isPro
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-600/30'
-                    : (darkMode ? 'bg-white/5 hover:bg-white/10 text-white border border-white/10 backdrop-blur-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-900')
+                  className={`w-full py-5 rounded-2xl font-bold text-lg transition-all transform active:scale-95 ${isPro
+                    ? 'bg-primary-base hover:bg-primary-hover text-white shadow-xl shadow-primary-base/30'
+                    : 'bg-secondary hover:bg-primary-soft text-heading border border-border'
                     }`}
                 >
                   {plan.price === 'Custom' || plan.price === 'مخصص'

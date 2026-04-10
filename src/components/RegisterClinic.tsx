@@ -97,7 +97,6 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                 email: adminData.email,
                 password: adminData.password,
             });
-
             const { data: session } = await supabase.auth.getSession();
             console.log(session);
 
@@ -193,7 +192,7 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                             <Stethoscope className="text-white w-5 h-5" />
                         </div>
-                        <span>CuraAI</span>
+                        <span>WhatApp Clinic</span>
                     </button>
                     <button
                         onClick={onBack}

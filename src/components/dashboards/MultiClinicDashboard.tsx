@@ -224,6 +224,7 @@ export default function MultiClinicDashboard({ initialView = 'dashboard' }: { in
                 {currentView === 'doctors' ? (
                     <div className="flex-1 overflow-y-auto flex flex-col p-6">
                         <DoctorsManagement darkMode={false} language={language} />
+
                     </div>
                 ) : (
                     <main className="flex-1 overflow-y-auto p-8 space-y-8">

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { translations, Language } from '@/locales/translations';
+import { useRouter } from 'next/navigation';
 
 export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, language, setLanguage, login, setLogin }: {
     currentView: string,
@@ -25,7 +26,9 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
 }) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const router = useRouter();
     const t = translations[language];
+
 
     // Helper to determine RTL
     const isRTL = language === 'ar';
@@ -42,12 +45,12 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
     // Solid background on Settings page or when scrolled.
     const hasSolidBg = isScrolled || !isHome;
 
-    const navBg = darkMode
-        ? (hasSolidBg ? 'bg-slate-950/80 backdrop-blur-md border-b border-white/10 py-3' : 'bg-transparent py-6')
-        : (hasSolidBg ? 'bg-white/80 backdrop-blur-md border-b border-slate-200 py-3' : 'bg-transparent py-6');
+    const navBg = hasSolidBg 
+        ? 'bg-background/80 backdrop-blur-xl border-b border-border py-4' 
+        : 'bg-transparent py-6';
 
-    const textColor = darkMode ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900';
-    const logoColor = darkMode ? 'text-white' : 'text-slate-900';
+    const textColor = 'text-text-secondary hover:text-primary-base transition-colors duration-300';
+    const logoColor = 'text-heading';
 
     return (
         <nav
@@ -55,12 +58,12 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}
         >
             <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-                <button onClick={() => setCurrentView('home')} className="flex items-center gap-2 group">
-                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center transition-colors group-hover:bg-blue-700">
-                        <Stethoscope className="text-white w-6 h-6" />
+                <button onClick={() => setCurrentView('home')} className="flex items-center gap-3 group">
+                    <div className="w-12 h-12 bg-primary-base rounded-2xl flex items-center justify-center transition-all group-hover:bg-primary-hover shadow-lg shadow-primary-base/20">
+                        <Stethoscope className="text-white w-7 h-7" />
                     </div>
 
-                    <span className={`text-2xl font-bold ${logoColor} tracking-tight`}>Cura<span className="text-blue-500">AI</span></span>
+                    <span className={`text-2xl font-bold ${logoColor} tracking-tight`}>WhatApp Clinic</span>
                 </button>
 
                 {/* Desktop Nav */}
@@ -72,30 +75,31 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
                             <a href="#pricing" className={`text-sm font-medium ${textColor} transition-colors`}>{t.nav.pricing}</a>
                         </>
                     )}
-                    <div className="flex items-center gap-4 border-l border-slate-200 dark:border-white/10 pl-8 rtl:border-l-0 rtl:border-r rtl:pl-0 rtl:pr-8">
+                    <div className="flex items-center gap-4 border-l border-border pl-8 rtl:border-l-0 rtl:border-r rtl:pl-0 rtl:pr-8">
                         <button
                             onClick={() => setDarkMode(!darkMode)}
-                            className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-yellow-400 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'}`}
+                            className="p-2.5 rounded-xl transition-all bg-secondary text-text-primary hover:bg-primary-soft hover:text-primary-base"
                         >
                             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
                         <button
                             onClick={() => setCurrentView(isHome ? 'settings' : 'home')}
-                            className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}
+                            className="p-2.5 rounded-xl transition-all text-text-secondary hover:text-primary-base hover:bg-primary-soft"
                         >
                             <SettingsIcon className="w-5 h-5" />
                         </button>
                         <button
                             onClick={() => setCurrentView('register')}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-colors"
+                            className="bg-primary-base hover:bg-primary-hover text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary-base/20 hover:scale-[1.02] active:scale-[0.98]"
                         >
                             {t.nav.getStarted}
                         </button>
                         <button
-                            onClick={() => setCurrentView('login')}
-                            className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
+                            onClick={() => router.push('/login')}
+                            className="p-3 rounded-xl transition-all text-text-muted hover:text-heading hover:bg-secondary">
                             {t.nav.login}
                         </button>
+
                     </div>
                 </div>
 
@@ -115,7 +119,7 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className={`absolute top-full left-0 right-0 border-b p-6 md:hidden flex flex-col gap-4 ${darkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+                        className={`absolute top-full left-0 right-0 border-b p-6 md:hidden flex flex-col gap-4 ${darkMode ? 'bg-blue-700 border-white/10' : 'bg-white border-blue-100'}`}
                     >
                         <button onClick={() => { setCurrentView('home'); setIsMobileMenuOpen(false); }} className={`text-lg font-medium ${textColor} text-left rtl:text-right`}>{t.nav.home}</button>
                         <button onClick={() => { setCurrentView('settings'); setIsMobileMenuOpen(false); }} className={`text-lg font-medium ${textColor} text-left rtl:text-right`}>{t.nav.settings}</button>
@@ -127,10 +131,13 @@ export const Navbar = ({ currentView, setCurrentView, darkMode, setDarkMode, lan
                             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                             {darkMode ? t.settings.switchToLight : t.settings.switchToDark}
                         </button>
-                        <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-center font-semibold text-lg"   >
-                            <link href='/login' />
+                        <button 
+                            onClick={() => { router.push('/login'); setIsMobileMenuOpen(false); }}
+                            className="bg-primary-base text-white px-6 py-3 rounded-xl text-center font-semibold text-lg"
+                        >
                             {t.nav.login}
                         </button>
+
                     </motion.div>
                 )}
             </AnimatePresence>

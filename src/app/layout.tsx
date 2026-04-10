@@ -3,11 +3,12 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/language-provider";
+import AuthGuard from "@/components/auth-guard";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MedBot.AI - Smart Healthcare Assistant",
+  title: "WhatApp Clinic - Smart Healthcare Assistant",
   description: "Next-gen AI assistant for modern medical practices.",
 };
 
@@ -29,12 +30,15 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <LanguageProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <main className="flex-1">{children}</main>
-            </div>
+            <AuthGuard>
+              <div className="relative flex min-h-screen flex-col">
+                <main className="flex-1">{children}</main>
+              </div>
+            </AuthGuard>
           </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
