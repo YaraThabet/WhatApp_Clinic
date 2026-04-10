@@ -35,9 +35,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
         checkSession()
 
-        return () => {
-            subscription.unsubscribe()
-        }
     }, [pathname])
 
     const handleRouting = (currentSession: any, path: string) => {
@@ -46,14 +43,16 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         const isProtectedRoute = path.startsWith("/dashboard") || path.startsWith("/patients")
 
         if (currentSession) {
-            // If logged in and on a public-only page, redirect to dashboard
+            // If logged in and on a public-only page (login/register/landing), 
+            // redirect to the dashboard. Sub-routes are handled by Next.js.
             if (isAuthPage || isLandingPage) {
-                router.push("/dashboard")
+                router.replace("/dashboard")
             }
         } else {
-            // If not logged in and on a protected route, redirect to login
+            // If not logged in and trying to access a protected route,
+            // push to login page while preserving the destination (optional, but standard).
             if (isProtectedRoute) {
-                router.push("/login")
+                router.replace("/login")
             }
         }
     }

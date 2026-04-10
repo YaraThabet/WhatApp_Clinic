@@ -135,7 +135,7 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
 
                 if (doctorsToInsert.length > 0) {
                     const { error: doctorsError } = await supabase
-                        .from("doctors")
+                        .from("doctor_clinic")
                         .insert(doctorsToInsert);
 
                     if (doctorsError) {
@@ -181,22 +181,22 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
     const progress = ((currentStep - 1) / (steps.length - 1)) * 100;
 
     return (
-        <div className={`min-h-screen pb-20 ${darkMode ? 'bg-slate-950' : 'bg-slate-50'}`} dir={t.dir}>
+        <div className={`min-h-screen pb-20 bg-background`} dir={t.dir}>
             {/* Simple Header */}
-            <div className={`h-15 border-b flex items-center px-6 mb-12 ${darkMode ? 'bg-slate-900/50 border-white/5' : 'bg-white border-slate-200 shadow-sm'}`}>
+            <div className={`h-16 border-b flex items-center px-6 mb-12 bg-card border-border shadow-sm`}>
                 <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
                     <button
                         onClick={onBack}
-                        className={`flex items-center gap-2 text-xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}
+                        className={`flex items-center gap-3 text-xl font-bold tracking-tight text-heading`}
                     >
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <div className="w-9 h-9 bg-primary-base rounded-xl flex items-center justify-center shadow-lg shadow-primary-base/20">
                             <Stethoscope className="text-white w-5 h-5" />
                         </div>
-                        <span>WhatApp Clinic</span>
+                        <span className="bg-gradient-to-r from-primary-base to-primary-hover bg-clip-text text-transparent">WhatApp Clinic</span>
                     </button>
                     <button
                         onClick={onBack}
-                        className={`text-sm font-bold ${darkMode ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
+                        className={`text-sm font-bold text-text-muted hover:text-primary-base transition-colors`}
                     >
                         {t.register.nav.back}
                     </button>
@@ -207,27 +207,27 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                 <div className="grid lg:grid-cols-[1fr_380px] gap-12 items-start">
 
                     {/* Main Form Area */}
-                    <div className={`p-8 lg:p-12 rounded-[2.5rem] border shadow-xl ${darkMode ? 'bg-slate-900/50 border-white/10' : 'bg-white border-slate-200'}`}>
+                    <div className={`p-8 lg:p-12 rounded-[2.5rem] border bg-card border-border shadow-medical transition-all duration-500`}>
 
                         {/* Progress Bar */}
                         <div className="mb-12" dir="ltr">
-                            <div className="flex justify-between mb-4">
+                            <div className="flex justify-between mb-6">
                                 {steps.map((step) => (
-                                    <div key={step.id} className="flex flex-col items-center gap-2">
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${currentStep >= step.id
-                                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                                            : (darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-100 text-slate-400')
+                                    <div key={step.id} className="flex flex-col items-center gap-3">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold transition-all duration-300 ${currentStep >= step.id
+                                            ? 'bg-primary-base text-white shadow-lg shadow-primary-base/25 scale-110'
+                                            : 'bg-muted text-text-muted hover:bg-primary-soft/50'
                                             }`}>
-                                            {currentStep > step.id ? <CheckCircle2 className="w-6 h-6" /> : step.id}
+                                            {currentStep > step.id ? <CheckCircle2 className="w-6 h-6 animate-in zoom-in duration-300" /> : step.id}
                                         </div>
-                                        <span className={`text-xs font-medium hidden sm:block ${currentStep >= step.id ? (darkMode ? 'text-white' : 'text-slate-900') : 'text-slate-500'
+                                        <span className={`text-[10px] uppercase tracking-widest font-bold hidden sm:block ${currentStep >= step.id ? 'text-primary-base' : 'text-text-muted opacity-60'
                                             }`}>{step.title}</span>
                                     </div>
                                 ))}
                             </div>
-                            <div className={`h-1.5 w-full rounded-full overflow-hidden ${darkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                            <div className={`h-2 w-full rounded-full overflow-hidden bg-muted p-0.5`}>
                                 <motion.div
-                                    className="h-full bg-blue-600"
+                                    className="h-full rounded-full bg-primary-base shadow-[0_0_10px_rgba(2,132,199,0.3)]"
                                     initial={{ width: 0 }}
                                     animate={{ width: `${progress}%` }}
                                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -246,39 +246,39 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                                 {currentStep === 1 && (
                                     <div className="space-y-8">
                                         <div className="text-center mb-10">
-                                            <h2 className={`text-3xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.type.title}</h2>
-                                            <p className={darkMode ? 'text-slate-400' : 'text-slate-600'}>{t.register.type.subtitle}</p>
+                                            <h2 className={`text-4xl font-extrabold mb-3 text-heading tracking-tight`}>{t.register.type.title}</h2>
+                                            <p className="text-text-secondary text-lg">{t.register.type.subtitle}</p>
                                         </div>
 
-                                        <div className="grid sm:grid-cols-2 gap-6">
+                                        <div className="grid sm:grid-cols-2 gap-8">
                                             <button
                                                 onClick={() => setClinicType('single')}
-                                                className={`p-8 rounded-3xl border-2 transition-all text-left group ${clinicType === 'single'
-                                                    ? 'border-blue-600 bg-blue-600/5 shadow-xl shadow-blue-600/10'
-                                                    : (darkMode ? 'border-white/5 bg-white/5 hover:border-white/10' : 'border-slate-200 bg-white hover:border-blue-200 shadow-sm')
+                                                className={`p-8 rounded-[2rem] border-2 transition-all text-left group relative ${clinicType === 'single'
+                                                    ? 'border-primary-base bg-primary-soft shadow-lg'
+                                                    : 'border-border bg-card hover:border-primary-base/30 hover:shadow-md'
                                                     } ${language === 'ar' ? 'text-right' : 'text-left'}`}
                                             >
-                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors ${clinicType === 'single' ? 'bg-blue-600 text-white' : (darkMode ? 'bg-slate-800 text-slate-400' : 'bg-blue-50 text-blue-600')
+                                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${clinicType === 'single' ? 'bg-primary-base text-white' : 'bg-muted text-primary-base group-hover:bg-primary-soft'
                                                     } ${language === 'ar' ? 'mr-0 ml-auto' : ''}`}>
-                                                    <User className="w-7 h-7" />
+                                                    <User className="w-8 h-8" />
                                                 </div>
-                                                <h3 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.type.single.title}</h3>
-                                                <p className={`text-sm leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{t.register.type.single.description}</p>
+                                                <h3 className={`text-2xl font-bold mb-2 text-heading`}>{t.register.type.single.title}</h3>
+                                                <p className={`text-sm leading-relaxed text-text-secondary`}>{t.register.type.single.description}</p>
                                             </button>
 
                                             <button
                                                 onClick={() => setClinicType('multi')}
-                                                className={`p-8 rounded-3xl border-2 transition-all text-left group ${clinicType === 'multi'
-                                                    ? 'border-blue-600 bg-blue-600/5 shadow-xl shadow-blue-600/10'
-                                                    : (darkMode ? 'border-white/5 bg-white/5 hover:border-white/10' : 'border-slate-200 bg-white hover:border-blue-200 shadow-sm')
+                                                className={`p-8 rounded-[2rem] border-2 transition-all text-left group relative ${clinicType === 'multi'
+                                                    ? 'border-primary-base bg-primary-soft shadow-lg'
+                                                    : 'border-border bg-card hover:border-primary-base/30 hover:shadow-md'
                                                     } ${language === 'ar' ? 'text-right' : 'text-left'}`}
                                             >
-                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors ${clinicType === 'multi' ? 'bg-blue-600 text-white' : (darkMode ? 'bg-slate-800 text-slate-400' : 'bg-blue-50 text-blue-600')
+                                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${clinicType === 'multi' ? 'bg-primary-base text-white' : 'bg-muted text-primary-base group-hover:bg-primary-soft'
                                                     } ${language === 'ar' ? 'mr-0 ml-auto' : ''}`}>
-                                                    <Users className="w-7 h-7" />
+                                                    <Users className="w-8 h-8" />
                                                 </div>
-                                                <h3 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.type.multi.title}</h3>
-                                                <p className={`text-sm leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{t.register.type.multi.description}</p>
+                                                <h3 className={`text-2xl font-bold mb-2 text-heading`}>{t.register.type.multi.title}</h3>
+                                                <p className={`text-sm leading-relaxed text-text-secondary`}>{t.register.type.multi.description}</p>
                                             </button>
                                         </div>
                                     </div>
@@ -287,8 +287,8 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                                 {currentStep === 2 && (
                                     <div className="space-y-8">
                                         <div className="mb-8 rtl:text-right">
-                                            <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.info.title}</h2>
-                                            <p className={darkMode ? 'text-slate-400' : 'text-slate-600'}>{t.register.info.subtitle}</p>
+                                            <h2 className={`text-3xl font-bold mb-2 text-heading`}>{t.register.info.title}</h2>
+                                            <p className="text-text-secondary">{t.register.info.subtitle}</p>
                                         </div>
 
                                         <div className="grid md:grid-cols-2 gap-6">
@@ -306,16 +306,15 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                                 {currentStep === 3 && (
                                     <div className="space-y-8">
                                         <div className="mb-8 rtl:text-right">
-                                            <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.admin.title}</h2>
-                                            <p className={darkMode ? 'text-slate-400' : 'text-slate-600'}>{t.register.admin.description}</p>
+                                            <h2 className={`text-3xl font-bold mb-2 text-heading`}>{t.register.admin.title}</h2>
+                                            <p className="text-text-secondary">{t.register.admin.description}</p>
                                         </div>
 
-                                        <div className={`p-4 rounded-xl flex items-start gap-4 mb-8 rtl:flex-row-reverse ${darkMode ? 'bg-blue-500/10 border border-blue-500/20' : 'bg-blue-50 border border-blue-100'
-                                            }`}>
-                                            <div className={`mt-0.5 p-2 rounded-lg shrink-0 ${darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600'}`}>
+                                        <div className={`p-5 rounded-2xl flex items-start gap-4 mb-8 rtl:flex-row-reverse bg-primary-soft border border-primary-base/20 shadow-sm shadow-primary-base/5`}>
+                                            <div className={`mt-0.5 p-2 rounded-xl shrink-0 bg-primary-base/10 text-primary-base`}>
                                                 <ShieldCheck className="w-5 h-5" />
                                             </div>
-                                            <p className={`text-sm leading-relaxed rtl:text-right ${darkMode ? 'text-blue-100' : 'text-blue-900'}`}>
+                                            <p className={`text-sm font-medium leading-relaxed rtl:text-right text-primary-active`}>
                                                 {t.register.admin.infoBox}
                                             </p>
                                         </div>
@@ -333,12 +332,12 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                                     <div className="space-y-8">
                                         <div className="flex items-center justify-between mb-8 rtl:flex-row-reverse">
                                             <div className="rtl:text-right">
-                                                <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.doctors.title}</h2>
-                                                <p className={darkMode ? 'text-slate-400' : 'text-slate-600'}>{t.register.doctors.subtitle}</p>
+                                                <h2 className={`text-3xl font-bold mb-2 text-heading`}>{t.register.doctors.title}</h2>
+                                                <p className="text-text-secondary">{t.register.doctors.subtitle}</p>
                                             </div>
                                             <button
                                                 onClick={addDoctor}
-                                                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all"
+                                                className="flex items-center gap-2 bg-primary-base hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary-base/20"
                                             >
                                                 <Plus className="w-4 h-4" /> {t.register.doctors.addDoctor}
                                             </button>
@@ -346,11 +345,11 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
 
                                         <div className="space-y-6">
                                             {doctors.map((doctor, index) => (
-                                                <div key={doctor.id} className={`relative p-6 rounded-3xl border ${darkMode ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'}`}>
-                                                    <div className="flex items-center justify-between mb-4 rtl:flex-row-reverse">
-                                                        <span className="text-xs font-bold uppercase tracking-widest text-blue-500">{t.register.doctors.name} #{index + 1}</span>
+                                                <div key={doctor.id} className={`relative p-8 rounded-[2rem] border bg-background border-border shadow-sm`}>
+                                                    <div className="flex items-center justify-between mb-6 rtl:flex-row-reverse">
+                                                        <span className="text-xs font-black uppercase tracking-widest text-primary-base opacity-80">{t.register.doctors.name} #{index + 1}</span>
                                                         {doctors.length > 1 && (
-                                                            <button onClick={() => removeDoctor(doctor.id)} className="text-red-500 hover:text-red-600 p-1">
+                                                            <button onClick={() => removeDoctor(doctor.id)} className="text-error hover:scale-110 transition-transform p-2 bg-error/5 rounded-full">
                                                                 <Trash2 className="w-5 h-5" />
                                                             </button>
                                                         )}
@@ -369,7 +368,7 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                                         <div className="flex justify-center pt-4">
                                             <button
                                                 onClick={handleRegister}
-                                                className={`text-sm font-bold ${darkMode ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900 underline underline-offset-4'}`}
+                                                className={`text-sm font-bold text-text-muted hover:text-heading transition-colors underline underline-offset-8`}
                                             >
                                                 {t.register.doctors.skip}
                                             </button>
@@ -380,14 +379,14 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                         </AnimatePresence>
 
                         {/* Navigation Buttons */}
-                        <div className="mt-12 pt-8 border-t border-slate-200 dark:border-white/10 flex items-center justify-between" dir="ltr">
+                        <div className="mt-12 pt-8 border-t border-border flex items-center justify-between" dir="ltr">
                             <button
                                 dir={t.dir}
                                 onClick={prevStep}
                                 disabled={currentStep === 1}
-                                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${currentStep === 1
+                                className={`flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold transition-all ${currentStep === 1
                                     ? 'opacity-0 pointer-events-none'
-                                    : (darkMode ? 'text-white hover:bg-white/5' : 'text-slate-900 hover:bg-slate-100')
+                                    : 'text-heading hover:bg-muted bg-transparent border border-border shadow-sm'
                                     }`}
                             >
                                 {language === 'ar' ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
@@ -398,7 +397,7 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                                 <button
                                     dir={t.dir}
                                     onClick={nextStep}
-                                    className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+                                    className="bg-primary-base hover:bg-primary-hover text-white px-10 py-3.5 rounded-2xl font-bold shadow-lg shadow-primary-base/20 flex items-center gap-3 transition-all hover:translate-y-[-2px] active:translate-y-[0px]"
                                 >
                                     <span>{t.register.nav.next}</span>
                                     {language === 'ar' ? <ArrowLeft className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />}
@@ -408,7 +407,7 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                                     dir={t.dir}
                                     onClick={handleRegister}
                                     disabled={isRegistering}
-                                    className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 disabled:opacity-70 disabled:hover:scale-100"
+                                    className="bg-primary-base hover:bg-primary-hover text-white px-12 py-3.5 rounded-2xl font-bold shadow-lg shadow-primary-base/20 flex items-center gap-3 transition-all hover:translate-y-[-2px] active:translate-y-[0px] disabled:opacity-70 disabled:hover:translate-y-0"
                                 >
                                     <span>{isRegistering ? t.register.nav.registering : t.register.nav.register}</span>
                                     <CheckCircle2 className="w-5 h-5" />
@@ -419,45 +418,44 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
 
                     {/* Right Side Panel - Trust Info */}
                     <aside className="space-y-6">
-                        <div className={`p-8 rounded-[2.5rem] border ${darkMode ? 'bg-slate-900/50 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
-                            <h3 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-slate-900'} rtl:text-right`}>{t.register.trust.title}</h3>
-                            <div className="space-y-6">
+                        <div className={`p-8 rounded-[2.5rem] border bg-card border-border shadow-medical`}>
+                            <h3 className={`text-xl font-bold mb-8 text-heading rtl:text-right`}>{t.register.trust.title}</h3>
+                            <div className="space-y-8">
                                 <div className="flex gap-4 rtl:flex-row-reverse">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${darkMode ? 'bg-blue-500/10 text-blue-400' : 'bg-blue-50 text-blue-600'}`}>
-                                        <ShieldCheck className="w-5 h-5" />
+                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-primary-soft text-primary-base border border-primary-base/10`}>
+                                        <ShieldCheck className="w-6 h-6" />
                                     </div>
                                     <div className="rtl:text-right">
-                                        <h4 className={`font-bold text-sm mb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.trust.hipaa.title}</h4>
-                                        <p className="text-xs text-slate-500 leading-relaxed">{t.register.trust.hipaa.description}</p>
+                                        <h4 className={`font-bold text-base mb-1 text-heading tracking-tight`}>{t.register.trust.hipaa.title}</h4>
+                                        <p className="text-xs text-text-muted leading-relaxed font-medium">{t.register.trust.hipaa.description}</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4 rtl:flex-row-reverse">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${darkMode ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-50 text-indigo-600'}`}>
-                                        <Lock className="w-5 h-5" />
+                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-indigo-500/10 text-indigo-500 border border-indigo-500/10`}>
+                                        <Lock className="w-6 h-6" />
                                     </div>
                                     <div className="rtl:text-right">
-                                        <h4 className={`font-bold text-sm mb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.trust.encryption.title}</h4>
-                                        <p className="text-xs text-slate-500 leading-relaxed">{t.register.trust.encryption.description}</p>
+                                        <h4 className={`font-bold text-base mb-1 text-heading tracking-tight`}>{t.register.trust.encryption.title}</h4>
+                                        <p className="text-xs text-text-muted leading-relaxed font-medium">{t.register.trust.encryption.description}</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4 rtl:flex-row-reverse">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${darkMode ? 'bg-blue-500/10 text-blue-400' : 'bg-blue-50 text-blue-600'}`}>
-                                        <CheckCircle2 className="w-5 h-5" />
+                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-primary-soft text-primary-base border border-primary-base/10`}>
+                                        <CheckCircle2 className="w-6 h-6" />
                                     </div>
                                     <div className="rtl:text-right">
-                                        <h4 className={`font-bold text-sm mb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.trust.community.title}</h4>
-                                        <p className="text-xs text-slate-500 leading-relaxed">{t.register.trust.community.description}</p>
+                                        <h4 className={`font-bold text-base mb-1 text-heading tracking-tight`}>{t.register.trust.community.title}</h4>
+                                        <p className="text-xs text-text-muted leading-relaxed font-medium">{t.register.trust.community.description}</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className={`mt-10 p-6 rounded-2xl border border-dashed ${darkMode ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-slate-50'}`}>
+                            <div className={`mt-10 p-6 rounded-[1.5rem] border border-dashed border-border bg-background transition-colors`}>
                                 <div className="flex items-center gap-3 mb-3 rtl:flex-row-reverse">
-                                    {/* <FileText className="w-5 h-5 text-blue-500" />
-                                    <span className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>{t.register.help.title}</span> */}
+                                    {/* <FileText className="w-5 h-5 text-primary-base" /> */}
                                 </div>
-                                <p className={`text-xs text-slate-500 mb-4 rtl:text-right`}>{t.register.help.description}</p>
-                                <button className="text-xs font-bold text-blue-500 hover:underline rtl:w-full rtl:text-right">{t.register.help.contact}</button>
+                                <p className={`text-xs text-text-muted mb-5 rtl:text-right font-medium`}>{t.register.help.description}</p>
+                                <button className="text-sm font-bold text-primary-base hover:text-primary-hover hover:scale-105 transition-all rtl:w-full rtl:text-right underline underline-offset-4 decoration-primary-base/30">{t.register.help.contact}</button>
                             </div>
                         </div>
                     </aside>
@@ -480,21 +478,18 @@ interface InputFieldProps {
 }
 
 const InputField = React.memo(({ label, value, onChange, type = "text", placeholder, icon: Icon, required = false, darkMode, language }: InputFieldProps) => (
-    <div className="flex flex-col gap-1.5 w-full">
-        <label className={`text-sm font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'} ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-            {label} {required && <span className="text-red-500">*</span>}
+    <div className="flex flex-col gap-2 w-full">
+        <label className={`text-sm font-bold tracking-tight text-text-secondary ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+            {label} {required && <span className="text-error font-black">*</span>}
         </label>
-        <div className="relative">
-            {Icon && <Icon className={`absolute ${language === 'ar' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />}
+        <div className="relative group">
+            {Icon && <Icon className={`absolute ${language === 'ar' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-4.5 h-4.5 transition-colors group-focus-within:text-primary-base ${darkMode ? 'text-text-muted' : 'text-text-muted'} `} />}
             <input
                 type={type}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
-                className={`w-full py-2.5 ${Icon ? (language === 'ar' ? 'pr-10 pl-4' : 'pl-10 pr-4') : 'px-4'} rounded-xl border transition-all outline-none ${darkMode
-                    ? 'bg-slate-800 border-white/10 text-white focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'
-                    : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5'
-                    } ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                className={`w-full py-3.5 ${Icon ? (language === 'ar' ? 'pr-11 pl-4' : 'pl-11 pr-4') : 'px-5'} rounded-2xl border transition-all duration-300 outline-none text-base bg-background border-border text-heading placeholder:text-text-muted/60 focus:bg-card focus:border-primary-base/50 focus:ring-[6px] focus:ring-primary-base/5 shadow-sm active:scale-[0.99] ${language === 'ar' ? 'text-right' : 'text-left'}`}
             />
         </div>
     </div>

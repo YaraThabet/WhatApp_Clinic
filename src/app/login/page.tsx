@@ -21,11 +21,10 @@ export default function LoginPage() {
     const { t } = useLanguage()
     const router = useRouter()
 
-
-
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
+        setErrorMsg("")
 
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
@@ -35,6 +34,7 @@ export default function LoginPage() {
         setLoading(false)
 
         if (error) {
+
             setErrorMsg(error.message)
             return
         }
@@ -42,6 +42,7 @@ export default function LoginPage() {
             setErrorMsg("Something went wrong")
             return
         }
+
         const user = data.user
 
         // Get user profile
