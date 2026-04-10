@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"
 import { useLanguage } from "@/components/language-provider"
 import { supabase } from "@/lib/supabase";
 import { useState } from "react"
+import { motion } from "framer-motion"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
@@ -43,7 +44,7 @@ export default function LoginPage() {
         }
         const user = data.user
 
-        // مثال: تحديد نوع العيادة من قاعدة البيانات (اختياري)
+        // Get user profile
         const { data: profile } = await supabase
             .from("profiles")
             .select("clinicType")
