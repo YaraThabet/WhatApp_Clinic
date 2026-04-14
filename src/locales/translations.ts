@@ -387,7 +387,21 @@ export const translations: Record<Language, any> = {
                     whatsappMessage: "Hello, this is WhatApp Clinic reaching out regarding your health record."
                 }
             }
-        }
+        },
+        resetPassword: {
+            title: 'Reset Password',
+            subtitle: 'Enter your new password below.',
+            newPassword: 'New Password',
+            confirmPassword: 'Confirm New Password',
+            submit: 'Reset Password',
+            resetting: 'Updating...',
+            successTitle: 'Password updated',
+            successMessage: 'Your password has been reset successfully.',
+            errorTitle: 'Update failed',
+            backToLogin: 'Back to Login',
+            passwordsMismatch: 'Passwords do not match',
+            passwordTooShort: 'Password must be at least 6 characters'
+        },
     },
     ar: {
         dir: 'rtl',
@@ -775,6 +789,20 @@ export const translations: Record<Language, any> = {
                     whatsappMessage: "مرحباً، نحن من WhatApp Clinic نتواصل معك بخصوص سجلك الصحي."
                 }
             }
-        }
+        },
+        resetPassword: {
+            title: 'إعادة تعيين كلمة المرور',
+            subtitle: 'أدخل كلمة المرور الجديدة أدناه.',
+            newPassword: 'كلمة المرور الجديدة',
+            confirmPassword: 'تأكيد كلمة المرور',
+            submit: 'إعادة تعيين',
+            resetting: 'جاري التحديث...',
+            successTitle: 'تم التحديث بنجاح',
+            successMessage: 'تمت إعادة تعيين كلمة المرور بنجاح.',
+            errorTitle: 'فشل التحديث',
+            backToLogin: 'العودة لتسجيل الدخول',
+            passwordsMismatch: 'كلمات المرور غير متطابقة',
+            passwordTooShort: 'يجب أن لا تقل كلمة المرور عن 6 أحرف'
+        },
     }
 };

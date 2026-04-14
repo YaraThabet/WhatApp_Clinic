@@ -6,16 +6,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { Mail, Lock, ArrowRight, Stethoscope } from "lucide-react"
+import { Mail, Lock, ArrowRight, Stethoscope, Eye, EyeOff, AlertCircle, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useLanguage } from "@/components/language-provider"
 import { supabase } from "@/lib/supabase";
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
     const [errorMsg, setErrorMsg] = useState("")
     const [loading, setLoading] = useState(false)
     const { t } = useLanguage()
@@ -23,49 +24,70 @@ export default function LoginPage() {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (loading) return
+        
         setLoading(true)
         setErrorMsg("")
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        })
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            })
 
-        setLoading(false)
+            if (error) {
+                // Friendly error translation or fallback
+                setErrorMsg(error.message === "Invalid login credentials" 
+                    ? "Incorrect email or password. Please try again." 
+                    : error.message)
+                setLoading(false)
+                return
+            }
 
-        if (error) {
+            if (!data?.user) {
+                setErrorMsg("Internal authentication error. Please try again.")
+                setLoading(false)
+                return
+            }
 
-            setErrorMsg(error.message)
-            return
-        }
-        if (!data?.user) {
-            setErrorMsg("Something went wrong")
-            return
-        }
+            const user = data.user
 
-        const user = data.user
+            // Get user profile safely using maybeSingle
+            const { data: profile, error: profileError } = await supabase
+                .from("profiles")
+                .select("clinicType")
+                .eq("user_id", user.id)
+                .maybeSingle()
 
-        // Get user profile
-        const { data: profile } = await supabase
-            .from("profiles")
-            .select("clinicType")
-            .eq("user_id", user.id)
-            .single()
+            if (profileError) {
+                console.error("Profile fetch error:", profileError)
+            }
 
-        const clinicType = profile?.clinicType || "single"
+            // Handle potential missing profile - redirect to registration if no profile exists
+            if (!profile) {
+                console.warn("User logged in but has no profile record.")
+                router.push("/register")
+                return
+            }
 
-        if (clinicType === "single") {
-            router.push("/dashboard/single-clinic")
-        } else {
-            router.push("/dashboard/multi-clinic")
+            const clinicType = profile?.clinicType || "single"
+
+            if (clinicType === "single") {
+                router.push("/dashboard/single-clinic")
+            } else {
+                router.push("/dashboard/multi-clinic")
+            }
+        } catch (err) {
+            console.error("Unexpected error during login:", err)
+            setErrorMsg("An unexpected error occurred. Please try again later.")
+            setLoading(false)
         }
     }
 
-
     return (
-        <div className="min-h-screen bg-[#0a0f1c] text-white flex flex-col font-sans selection:bg-[#13a4ec]/30">
+        <div className="min-h-screen bg-[#0a0f1c] text-white flex flex-col font-sans selection:bg-[#13a4ec]/30 overflow-x-hidden">
             {/* Header / Back Navigation */}
-            <header className="px-6 md:px-12 py-6 flex items-center justify-between">
+            <header className="px-6 md:px-12 py-6 flex items-center justify-between relative z-10">
                 <Link
                     href="/"
                     className="flex items-center gap-2 text-gray-400 hover:text-white transition-all group font-bold"
@@ -82,14 +104,15 @@ export default function LoginPage() {
                     </div>
                 </div>
             </header>
-            <main className="flex-1 flex items-center justify-center p-4 md:p-8">
-                <div className="max-w-[1100px] w-full bg-[#111827]/60 border border-white/5 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden flex flex-col md:flex-row shadow-[0_32px_120px_rgba(0,0,0,0.6)] backdrop-blur-xl">
+
+            <main className="flex-1 flex items-center justify-center p-4 md:p-8 relative">
+                <div className="max-w-[1100px] w-full bg-[#111827]/60 border border-white/5 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden flex flex-col md:flex-row shadow-[0_32px_120px_rgba(0,0,0,0.6)] backdrop-blur-xl relative z-10 animate-in fade-in zoom-in duration-500">
 
                     {/* Left Side: Visual */}
                     <div className="hidden md:flex md:w-[55%] relative group overflow-hidden min-h-[400px] md:min-h-full">
                         <Image
                             src="/doctor-login-bg.png"
-                            alt="Doctor"
+                            alt="Doctor Login"
                             fill
                             className="object-cover object-center grayscale-[0.2] brightness-75 group-hover:scale-105 transition-transform duration-10000 ease-out"
                         />
@@ -119,10 +142,10 @@ export default function LoginPage() {
                     <div className="flex-1 p-6 sm:p-8 md:p-16 flex flex-col justify-center gap-6 sm:gap-10">
                         <div className="space-y-3">
                             <h2 className="text-4xl font-black tracking-tight">{t("loginPage.welcome")}</h2>
-                            <p className="text-gray-400 font-medium">Access your clinic&apos;s WhatsApp dashboard.</p>
+                            <p className="text-gray-400 font-medium tracking-tight">Access your clinic&apos;s medical dashboard.</p>
                         </div>
 
-                        <form className="space-y-8" onSubmit={(e) => handleLogin(e)}>
+                        <form className="space-y-8" onSubmit={handleLogin}>
                             <div className="space-y-2.5">
                                 <Label htmlFor="email" className="text-xs font-black text-gray-500 uppercase tracking-[0.1em]">{t("loginPage.emailLabel")}</Label>
                                 <div className="relative group">
@@ -130,10 +153,12 @@ export default function LoginPage() {
                                     <Input
                                         id="email"
                                         type="email"
+                                        disabled={loading}
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder={t("loginPage.emailPlaceholder")}
-                                        className="bg-[#0a0f1c]/80 border-white/5 pl-12 h-14 rounded-2xl text-white focus:ring-2 focus:ring-[#13a4ec]/20 focus:border-[#13a4ec]/40 placeholder:text-gray-700 transition-all font-medium"
+                                        className="bg-[#0a0f1c]/80 border-white/5 pl-12 h-14 rounded-2xl text-white focus:ring-2 focus:ring-[#13a4ec]/20 focus:border-[#13a4ec]/40 placeholder:text-gray-700 transition-all font-medium disabled:opacity-50"
+                                        required
                                     />
                                 </div>
                             </div>
@@ -141,7 +166,7 @@ export default function LoginPage() {
                             <div className="space-y-2.5">
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="password" className="text-xs font-black text-gray-500 uppercase tracking-[0.1em]">{t("loginPage.passwordLabel")}</Label>
-                                    <Link href="/forgot-password" className="text-xs font-bold text-[#137fec] hover:underline decoration-2 underline-offset-4 tracking-tight">
+                                    <Link href="/forgot-password" title="Click to reset your password" className="text-xs font-bold text-[#137fec] hover:underline decoration-2 underline-offset-4 tracking-tight transition-colors">
                                         {t("loginPage.forgotPassword")}
                                     </Link>
                                 </div>
@@ -149,11 +174,21 @@ export default function LoginPage() {
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 group-focus-within:text-[#13a4ec] transition-colors" />
                                     <Input
                                         id="password"
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
+                                        disabled={loading}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="bg-[#0a0f1c]/80 border-white/5 pl-12 h-14 rounded-2xl text-white focus:ring-2 focus:ring-[#13a4ec]/20 focus:border-[#13a4ec]/40 transition-all font-medium"
+                                        className="bg-[#0a0f1c]/80 border-white/5 pl-12 pr-12 h-14 rounded-2xl text-white focus:ring-2 focus:ring-[#13a4ec]/20 focus:border-[#13a4ec]/40 transition-all font-medium disabled:opacity-50"
+                                        required
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white transition-colors p-1"
+                                        title={showPassword ? "Hide password" : "Show password"}
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
                                 </div>
                             </div>
 
@@ -166,12 +201,36 @@ export default function LoginPage() {
                                     {t("loginPage.rememberMe")}
                                 </label>
                             </div>
-                            {errorMsg && (
-                                <p className="text-red-500 text-sm">{errorMsg}</p>
-                            )}
-                            <Button disabled={loading} className="w-full h-16 bg-[#13a4ec] hover:bg-[#13a4ec]/90 text-white font-black text-lg rounded-[1.25rem] shadow-[0_20px_40px_rgba(19,164,236,0.3)] transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center gap-3">
-                                {t("loginPage.signIn")}
-                                <ArrowRight className="h-6 w-6 stroke-[3]" />
+
+                            <AnimatePresence>
+                                {errorMsg && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="flex items-start gap-2 text-red-400 bg-red-400/10 p-4 rounded-xl border border-red-400/20"
+                                    >
+                                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                                        <p className="text-sm font-medium leading-relaxed">{errorMsg}</p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            <Button 
+                                disabled={loading} 
+                                className="w-full h-16 bg-[#13a4ec] hover:bg-[#13a4ec]/90 text-white font-black text-lg rounded-[1.25rem] shadow-[0_20px_40px_rgba(19,164,236,0.3)] transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center justify-center gap-3 disabled:opacity-70 disabled:hover:translate-y-0"
+                            >
+                                {loading ? (
+                                    <>
+                                        <Loader2 className="w-6 h-6 animate-spin" />
+                                        <span>Logging in...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        {t("loginPage.signIn")}
+                                        <ArrowRight className="h-6 w-6 stroke-[3]" />
+                                    </>
+                                )}
                             </Button>
                         </form>
                     </div>

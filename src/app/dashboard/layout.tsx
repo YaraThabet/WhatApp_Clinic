@@ -15,7 +15,7 @@ export default function DashboardLayout({
     const t = translations[language];
 
     return (
-        <div className="flex h-screen bg-slate-50 overflow-hidden" dir={t.dir}>
+        <div className="flex h-screen bg-[#fefdf9] dark:bg-slate-950 overflow-hidden transition-colors" dir={t.dir}>
             {/* Global Sidebar */}
             <DashboardSidebar />
 

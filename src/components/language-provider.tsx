@@ -11,6 +11,7 @@ interface LanguageContextType {
     language: Language
     direction: Direction
     toggleLanguage: () => void
+    setLanguage: (lang: Language) => void
     t: (key: string) => string
 }
 
@@ -44,13 +45,18 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         return typeof value === "string" ? value : key
     }, [language])
 
+    const handleSetLanguage = React.useCallback((lang: Language) => {
+        setLanguage(lang)
+        setDirection(lang === "ar" ? "rtl" : "ltr")
+    }, [])
+
     React.useEffect(() => {
         document.documentElement.dir = direction
         document.documentElement.lang = language
     }, [direction, language])
 
     return (
-        <LanguageContext.Provider value={{ language, direction, toggleLanguage, t }}>
+        <LanguageContext.Provider value={{ language, direction, toggleLanguage, setLanguage: handleSetLanguage, t }}>
             <div dir={direction}>{children}</div>
         </LanguageContext.Provider>
     )

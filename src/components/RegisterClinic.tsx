@@ -26,6 +26,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { translations, Language } from '@/locales/translations';
 import { supabase } from '@/lib/supabase';
+import bcrypt from 'bcryptjs';
 
 interface Doctors {
     id: string;
@@ -135,7 +136,7 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
 
                 if (doctorsToInsert.length > 0) {
                     const { error: doctorsError } = await supabase
-                        .from("doctor_clinic")
+                        .from("doctor_clinics")
                         .insert(doctorsToInsert);
 
                     if (doctorsError) {
@@ -146,7 +147,25 @@ export default function RegisterClinic({ darkMode, language, onComplete, onBack 
                 }
             }
 
-            // 5️⃣ حفظ ونقل
+            // 5️⃣ أضف المسؤول (Admin) مع الربط بـ user_id
+            const hashedPassword = await bcrypt.hash(adminData.password, 10);
+            const { error: adminError } = await supabase
+                .from('admins')
+                .insert([{
+                    name: adminData.name,
+                    email: adminData.email,
+                    password: hashedPassword,
+                    clinic_id: clinicInsert.id,
+                    user_id: authData.user.id, // ربط المستخدم بسجل الأدمن
+                }]);
+
+            if (adminError) {
+                console.error("Admin insert error:", adminError.message);
+                setIsRegistering(false);
+                return;
+            }
+
+            // 6️⃣ حفظ ونقل
             localStorage.setItem("clinicType", clinicType);
             setIsRegistering(false);
             onComplete();

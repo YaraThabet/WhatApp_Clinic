@@ -124,5 +124,19 @@
         "leftTitle2": "automated via",
         "leftTitle3": "WhatsApp.",
         "leftSubtitle": "Join the next generation of healthcare professionals using WhatsClinic."
+    },
+    "resetPassword": {
+        "title": "Reset Password",
+        "subtitle": "Enter your new password below.",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "submit": "Reset Password",
+        "resetting": "Updating...",
+        "successTitle": "Password updated",
+        "successMessage": "Your password has been reset successfully.",
+        "errorTitle": "Update failed",
+        "backToLogin": "Back to Login",
+        "passwordsMismatch": "Passwords do not match",
+        "passwordTooShort": "Password must be at least 6 characters"
     }
 }
