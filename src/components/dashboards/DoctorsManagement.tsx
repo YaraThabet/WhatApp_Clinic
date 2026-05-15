@@ -1,193 +1,254 @@
 "use client";
 
-import React from 'react';
-import { Plus, Filter, MoreVertical, Stethoscope } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { translations, Language } from '@/locales/translations';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import React from "react";
+import { useRouter } from "next/navigation";
+import { Users } from "lucide-react";
 
-import { useRouter } from 'next/navigation';
+import { supabase } from "@/lib/supabase";
+import { useLanguage } from "@/components/language-provider";
 
-interface DoctorsManagementProps {
-  darkMode: boolean;
-  language: Language;
-}
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-export default function DoctorsManagement({ darkMode, language }: DoctorsManagementProps) {
+export default function DoctorsPage() {
   const router = useRouter();
-  const t = translations[language];
-  const isRTL = language === 'ar';
+  const { language } = useLanguage();
 
-  const mockDoctors = [
-    {
-      id: "1",
-      name: "Dr. Sarah Wilson",
-      avatar: "SW",
-      specialty: t.dashboard.mock.cardiologist,
-      patients: 1240,
-      appointments: 145,
-      status: "Active"
-    },
-    {
-      id: "2",
-      name: "Dr. Michael Chen",
-      avatar: "MC",
-      specialty: t.dashboard.mock.pediatrician,
-      patients: 890,
-      appointments: 98,
-      status: "Active"
-    },
-    {
-      id: "3",
-      name: "Dr. Emily Adams",
-      avatar: "EA",
-      specialty: t.dashboard.mock.dermatologist,
-      patients: 1530,
-      appointments: 210,
-      status: "On Leave"
-    },
-    {
-      id: "4",
-      name: "Dr. James Miller",
-      avatar: "JM",
-      specialty: t.dashboard.mock.cardiologist,
-      patients: 430,
-      appointments: 24,
-      status: "Inactive"
-    }
-  ];
+  const [doctors, setDoctors] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "Active":
-        return <Badge className="bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-none shadow-none dark:bg-emerald-500/10 dark:text-emerald-400 pointer-events-none">{t.dashboard.doctorsManagement.status.active}</Badge>;
-      case "Inactive":
-        return <Badge className="bg-slate-100 text-slate-600 hover:bg-slate-200 border-none shadow-none dark:bg-slate-800 dark:text-slate-400 pointer-events-none">{t.dashboard.doctorsManagement.status.inactive}</Badge>;
-      case "On Leave":
-        return <Badge className="bg-amber-50 text-amber-600 hover:bg-amber-100 border-none shadow-none dark:bg-amber-500/10 dark:text-amber-400 pointer-events-none">{t.dashboard.doctorsManagement.status.onLeave}</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+  const [deleteTarget, setDeleteTarget] = React.useState<any>(null);
+
+  // ================= FETCH DOCTORS =================
+  React.useEffect(() => {
+    const fetchDoctors = async () => {
+      setLoading(true);
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
+
+      if (!user) {
+        setDoctors([]);
+        setLoading(false);
+        return;
+      }
+
+      const { data: admin } = await supabase
+        .from("admins")
+        .select("clinic_id")
+        .eq("email", user.email)
+        .single();
+
+      if (!admin?.clinic_id) {
+        setDoctors([]);
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("doctor_clinics")
+        .select("*")
+        .eq("clinic_id", admin.clinic_id)
+        .order("created_at", { ascending: false });
+
+      if (!error) {
+        setDoctors(data || []);
+      } else {
+        console.error(error);
+        setDoctors([]);
+      }
+
+      setLoading(false);
+    };
+
+    fetchDoctors();
+  }, []);
+
+  // ================= DELETE DOCTOR =================
+  const deleteDoctor = async (doctorId: string) => {
+    const { error } = await supabase
+      .from("doctor_clinics")
+      .delete()
+      .eq("id", doctorId);
+
+    if (error) {
+      console.error(error);
+      return;
     }
+
+    setDoctors((prev) => prev.filter((d) => d.id !== doctorId));
+    setDeleteTarget(null);
   };
 
-  return (
-    <div dir={t.dir} className={cn(
-      "w-full font-sans transition-colors duration-300",
-      darkMode ? "bg-slate-950 text-slate-200" : "bg-slate-50 text-slate-900"
-    )}>
+  // ================= LOADING =================
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
+  }
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className={cn("text-2xl font-bold tracking-tight mb-1", darkMode ? "text-white" : "text-slate-900")}>
-            {t.dashboard.doctorsManagement.title}
-          </h1>
-          <p className={darkMode ? "text-slate-400" : "text-slate-500"}>
-            {t.dashboard.doctorsManagement.description}
+  // ================= EMPTY STATE =================
+  if (doctors.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-100 p-6">
+        <Card className="p-8 text-center max-w-md w-full">
+          <Users className="w-12 h-12 mx-auto text-slate-400 mb-4" />
+
+          <h2 className="text-xl font-bold mb-2">
+            {language === "ar" ? "لا يوجد أطباء" : "No Doctors Found"}
+          </h2>
+
+          <p className="text-slate-500 mb-6">
+            {language === "ar"
+              ? "ابدأ بإضافة أول طبيب في العيادة"
+              : "Start by adding your first doctor"}
           </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className={cn(
-            "gap-2 font-medium bg-white",
-            darkMode ? "bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800" : "border-slate-200 text-slate-700 hover:bg-slate-50"
-          )}>
-            <Filter className="w-4 h-4" />
-            {t.dashboard.doctorsManagement.filter}
+
+          <Button
+            className="w-full bg-blue-600 hover:bg-blue-500"
+            onClick={() => router.push("/dashboard/doctors/new")}
+          >
+            {language === "ar" ? "إضافة طبيب" : "Add Doctor"}
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2 font-semibold shadow-sm rounded-lg h-10 px-4">
-            <Plus className="w-4 h-4" />
-            {t.dashboard.doctorsManagement.addDoctor}
-          </Button>
-        </div>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">
+          {language === "ar" ? "الأطباء" : "Doctors"}
+        </h1>
+
+        <Button
+          onClick={() => router.push("/dashboard/doctors/new")}
+          className="bg-blue-600 hover:bg-blue-500"
+        >
+          {language === "ar" ? "إضافة طبيب" : "Add Doctor"}
+        </Button>
       </div>
 
-      {/* Main Table Card */}
-      <Card className={cn(
-        "border shadow-sm rounded-2xl overflow-hidden",
-        darkMode ? "bg-slate-900/50 border-slate-800" : "bg-white border-slate-200"
-      )}>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className={darkMode ? "bg-slate-900/80" : "bg-slate-50/80"}>
-                <TableRow className={darkMode ? "hover:bg-slate-800/50 border-slate-800" : "hover:bg-slate-50 border-slate-100"}>
-                  <TableHead className={cn("font-semibold text-xs py-4 px-6 uppercase tracking-wider", darkMode ? "text-slate-400" : "text-slate-500", isRTL && "text-right")}>
-                    {t.dashboard.doctorsManagement.table.doctorName}
-                  </TableHead>
-                  <TableHead className={cn("font-semibold text-xs py-4 px-6 uppercase tracking-wider", darkMode ? "text-slate-400" : "text-slate-500", isRTL && "text-right")}>
-                    {t.dashboard.doctorsManagement.table.specialty}
-                  </TableHead>
-                  <TableHead className={cn("font-semibold text-xs py-4 px-6 uppercase tracking-wider", darkMode ? "text-slate-400" : "text-slate-500", isRTL && "text-right")}>
-                    {t.dashboard.doctorsManagement.table.patients}
-                  </TableHead>
-                  <TableHead className={cn("font-semibold text-xs py-4 px-6 uppercase tracking-wider", darkMode ? "text-slate-400" : "text-slate-500", isRTL && "text-right")}>
-                    {t.dashboard.doctorsManagement.table.appointments}
-                  </TableHead>
-                  <TableHead className={cn("font-semibold text-xs py-4 px-6 uppercase tracking-wider", darkMode ? "text-slate-400" : "text-slate-500", isRTL && "text-right")}>
-                    {t.dashboard.doctorsManagement.table.status}
-                  </TableHead>
-                  <TableHead className={cn("font-semibold text-xs py-4 px-6 uppercase tracking-wider", darkMode ? "text-slate-400" : "text-slate-500", isRTL ? "text-left" : "text-right")}>
-                    {t.dashboard.doctorsManagement.table.actions}
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockDoctors.map((doc) => (
-                  <TableRow
-                    key={doc.id}
-                    className={cn(
-                      "transition-colors group cursor-pointer",
-                      darkMode ? "hover:bg-slate-800/50 border-slate-800" : "hover:bg-slate-50/80 border-slate-100"
-                    )}
-                    onClick={() => router.push(`/dashboard/doctors/${doc.id}`)}
-                  >
-                    <TableCell className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-10 border-2 border-white dark:border-slate-800 shadow-sm">
-                          <AvatarFallback className={cn("text-xs font-bold", darkMode ? "bg-slate-800 text-blue-400" : "bg-blue-50 text-blue-600")}>
-                            {doc.avatar}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className={cn("font-semibold text-sm transition-colors", darkMode ? "text-white group-hover:text-blue-400" : "text-slate-900 group-hover:text-blue-600")}>
-                          {doc.name}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <Stethoscope className="w-4 h-4 text-slate-400" />
-                        <span className={cn("text-sm font-medium", darkMode ? "text-slate-300" : "text-slate-600")}>
-                          {doc.specialty}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className={cn("px-6 py-4 whitespace-nowrap text-sm font-medium", darkMode ? "text-slate-300" : "text-slate-700")}>
-                      {doc.patients.toLocaleString()}
-                    </TableCell>
-                    <TableCell className={cn("px-6 py-4 whitespace-nowrap text-sm font-medium", darkMode ? "text-slate-300" : "text-slate-700")}>
-                      {doc.appointments.toLocaleString()}
-                    </TableCell>
-                    <TableCell className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(doc.status)}
-                    </TableCell>
-                    <TableCell className="px-6 py-4 whitespace-nowrap">
-                      <div className={cn("flex items-center", isRTL ? "justify-start" : "justify-end")}>
-                        <Button variant="ghost" size="icon" className={cn("rounded-lg", darkMode ? "hover:bg-slate-800 text-slate-400 hover:text-white" : "hover:bg-slate-100 text-slate-500 hover:text-slate-900")}>
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow-sm border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{language === "ar" ? "الطبيب" : "Doctor"}</TableHead>
+
+              <TableHead>
+                {language === "ar" ? "التخصص" : "Specialty"}
+              </TableHead>
+
+              <TableHead>{language === "ar" ? "البريد" : "Email"}</TableHead>
+
+              <TableHead>{language === "ar" ? "الهاتف" : "Phone"}</TableHead>
+
+              <TableHead>
+                {language === "ar" ? "الإجراءات" : "Actions"}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {doctors.map((doc) => (
+              <TableRow key={doc.id}>
+                {/* Doctor */}
+                <TableCell className="font-medium">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm">
+                      {doc.full_name?.slice(0, 2).toUpperCase()}
+                    </div>
+
+                    {doc.full_name}
+                  </div>
+                </TableCell>
+
+                {/* Specialty */}
+                <TableCell>{doc.specialty || "-"}</TableCell>
+
+                {/* Email */}
+                <TableCell className="text-slate-600">
+                  {doc.email || "-"}
+                </TableCell>
+
+                {/* Phone */}
+                <TableCell className="text-slate-600">
+                  {doc.phone || "-"}
+                </TableCell>
+
+                {/* Actions */}
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        router.push(`/dashboard/doctors/${doc.id}`)
+                      }
+                    >
+                      {language === "ar" ? "عرض" : "View"}
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      className="bg-red-600 hover:bg-red-500 text-white"
+                      onClick={() => setDeleteTarget(doc)}
+                    >
+                      {language === "ar" ? "حذف" : "Delete"}
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* ================= DELETE MODAL ================= */}
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-[400px] p-6">
+            <h2 className="text-lg font-bold mb-2">
+              {language === "ar" ? "تأكيد الحذف" : "Confirm Delete"}
+            </h2>
+
+            <p className="text-slate-600 mb-6">
+              {language === "ar"
+                ? `هل أنت متأكد أنك تريد حذف الدكتور ${deleteTarget.full_name}؟`
+                : `Are you sure you want to delete Dr. ${deleteTarget.full_name}?`}
+            </p>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
+              >
+                {language === "ar" ? "إلغاء" : "Cancel"}
+              </button>
+
+              <button
+                onClick={() => deleteDoctor(deleteTarget.id)}
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500"
+              >
+                {language === "ar" ? "حذف" : "Delete"}
+              </button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      )}
     </div>
   );
 }

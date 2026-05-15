@@ -19,12 +19,21 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 /**
  * Admin Supabase Client
  * To be used ONLY on the backend (API routes, server actions).
- * Bypasses Row Level Security (RLS). 
+ * Bypasses Row Level Security (RLS).
  * DO NOT expose SUPABASE_SERVICE_ROLE_KEY to the client side.
+ *
+ * If the service role key is missing, we expose null so API routes can fail fast
+ * with a clear message instead of opaque "fetch failed" from broken requests.
  */
-export const supabaseAdmin = typeof window === 'undefined'
-  ? createClient(supabaseUrl, supabaseServiceRoleKey)
-  : null
+export const supabaseAdmin =
+  typeof window === 'undefined' && supabaseUrl && supabaseServiceRoleKey
+    ? createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      })
+    : null
 
 /*
 =========================================

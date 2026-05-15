@@ -4,8 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/language-provider";
 import AuthGuard from "@/components/auth-guard";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Toaster } from "sonner";
+const inter = Inter({ subsets: ["latin"], display: "optional" });
 
 export const metadata: Metadata = {
   title: "WhatApp Clinic - Smart Healthcare Assistant",
@@ -20,9 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+        />
       </head>
-      <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased selection:bg-primary/20`}>
+      <body
+        className={`${inter.className} min-h-screen bg-background text-foreground antialiased selection:bg-primary/20`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -37,8 +42,8 @@ export default function RootLayout({
             </AuthGuard>
           </LanguageProvider>
         </ThemeProvider>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );
 }
-

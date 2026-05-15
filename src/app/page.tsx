@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from 'react';
-import { useState, useEffect } from 'react';
+import * as React from "react";
+import { useState, useEffect } from "react";
 import {
   Stethoscope,
   MessageSquare,
@@ -26,19 +26,31 @@ import {
   Building2,
   Check,
   Star,
-  Plus
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import Settings from '@/components/Settings';
-import RegisterClinic from '@/components/RegisterClinic';
-import Dashboard from '@/components/Dashboard';
-import { translations, Language } from '@/locales/translations';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
-import { PricingSection } from '@/components/PricingSection';
+  Plus,
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import Settings from "@/components/Settings";
+import RegisterClinic from "@/components/RegisterClinic";
+import Dashboard from "@/components/Dashboard";
+import { translations, Language } from "@/locales/translations";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { PricingSection } from "@/components/PricingSection";
 import { supabase } from "@/lib/supabase";
 
-const FeatureCard = ({ icon: Icon, title, description, delay, darkMode }: { icon: any, title: string, description: string, delay: number, darkMode: boolean }) => (
+const FeatureCard = ({
+  icon: Icon,
+  title,
+  description,
+  delay,
+  darkMode,
+}: {
+  icon: any;
+  title: string;
+  description: string;
+  delay: number;
+  darkMode: boolean;
+}) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -55,7 +67,13 @@ const FeatureCard = ({ icon: Icon, title, description, delay, darkMode }: { icon
   </motion.div>
 );
 
-const BenefitItem = ({ text, darkMode }: { text: string, darkMode: boolean }) => (
+const BenefitItem = ({
+  text,
+  darkMode,
+}: {
+  text: string;
+  darkMode: boolean;
+}) => (
   <div className="flex items-start gap-3">
     <div className="mt-1 p-1 rounded-full bg-primary-soft">
       <CheckCircle2 className="w-4 h-4 text-primary-base" />
@@ -64,18 +82,17 @@ const BenefitItem = ({ text, darkMode }: { text: string, darkMode: boolean }) =>
   </div>
 );
 
-
 export default function HomePage() {
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState("home");
   const [darkMode, setDarkMode] = useState(true);
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>("en");
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
 
@@ -84,42 +101,89 @@ export default function HomePage() {
     document.documentElement.lang = language;
   }, [language]);
 
-
-
   const t = translations[language];
 
-  if (currentView === 'settings') {
+  if (currentView === "settings") {
     return (
-      <div className={darkMode ? 'dark' : ''}>
-        <Navbar currentView={currentView} setCurrentView={setCurrentView} darkMode={darkMode} setDarkMode={setDarkMode} language={language} setLanguage={setLanguage} login={login} setLogin={setLogin} />
-        <div >
-          <Settings darkMode={darkMode} setDarkMode={setDarkMode} language={language} setLanguage={setLanguage} />
+      <div className={darkMode ? "dark" : ""}>
+        <Navbar
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+          language={language}
+          setLanguage={setLanguage}
+          login={login}
+          setLogin={setLogin}
+        />
+        <div>
+          <Settings
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+            language={language}
+            setLanguage={setLanguage}
+          />
         </div>
       </div>
     );
   }
 
-  if (currentView === 'register') {
+  if (currentView === "register") {
     return (
-      <div className={darkMode ? 'dark' : ''}>
-        <Navbar currentView={currentView} setCurrentView={setCurrentView} darkMode={darkMode} setDarkMode={setDarkMode} language={language} setLanguage={setLanguage} login={login} setLogin={setLogin} />
-        <RegisterClinic darkMode={darkMode} onComplete={() => setCurrentView('dashboard')} onBack={() => setCurrentView('home')} language={language} />
+      <div className={darkMode ? "dark" : ""}>
+        <Navbar
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+          language={language}
+          setLanguage={setLanguage}
+          login={login}
+          setLogin={setLogin}
+        />
+        <RegisterClinic
+          darkMode={darkMode}
+          onComplete={() => setCurrentView("dashboard")}
+          onBack={() => setCurrentView("home")}
+          language={language}
+        />
       </div>
     );
   }
 
-  if (currentView === 'dashboard') {
+  if (currentView === "dashboard") {
     return (
-      <div className={darkMode ? 'dark' : ''}>
-        <Navbar currentView={currentView} setCurrentView={setCurrentView} darkMode={darkMode} setDarkMode={setDarkMode} language={language} setLanguage={setLanguage} login={login} setLogin={setLogin} />
+      <div className={darkMode ? "dark" : ""}>
+        <Navbar
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+          language={language}
+          setLanguage={setLanguage}
+          login={login}
+          setLogin={setLogin}
+        />
         <Dashboard darkMode={darkMode} language={language} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-primary selection:bg-primary-base/30 transition-colors duration-500 font-sans" dir={t.dir}>
-      <Navbar currentView={currentView} setCurrentView={setCurrentView} darkMode={darkMode} setDarkMode={setDarkMode} language={language} setLanguage={setLanguage} login={login} setLogin={setLogin} />
+    <div
+      className="min-h-screen bg-background text-text-primary selection:bg-primary-base/30 transition-colors duration-500 font-sans"
+      dir={t.dir}
+    >
+      <Navbar
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        language={language}
+        setLanguage={setLanguage}
+        login={login}
+        setLogin={setLogin}
+      />
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-36 lg:pb-32 overflow-hidden">
@@ -144,24 +208,56 @@ export default function HomePage() {
               </div>
 
               <h1 className="text-5xl lg:text-7xl font-extrabold leading-[1.1] mb-8 tracking-tight text-heading">
-                {t.hero.title} <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-base to-primary-hover">
-                  {t.hero.titleAccent}
-                </span>
+                {language === "ar" ? (
+                  <>
+                    نظام ذكي لإدارة العيادات
+                    <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-base to-primary-hover">
+                      بشكل أسرع وأكثر احترافية
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    Smart Clinic Management System
+                    <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-base to-primary-hover">
+                      Faster, Smarter & More Professional
+                    </span>
+                  </>
+                )}
               </h1>
 
               <p className="text-lg lg:text-xl leading-relaxed mb-10 max-w-[600px] text-text-secondary">
-                {t.hero.description}
+                {language === "ar" ? (
+                  <>
+                    منصة متكاملة تساعد الأطباء والعيادات على إدارة المواعيد،
+                    متابعة المرضى، وتنظيم العمليات اليومية بسهولة من مكان واحد.
+                    صُممت لتقليل الوقت الضائع في الإدارة وزيادة كفاءة العمل
+                    الطبي عبر نظام رقمي ذكي وسريع.
+                  </>
+                ) : (
+                  <>
+                    An all-in-one platform that helps doctors and clinics manage
+                    appointments, track patients, and organize daily operations
+                    from a single place. Built to reduce administrative workload
+                    and improve healthcare efficiency through a fast and
+                    intelligent digital system.
+                  </>
+                )}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full sm:w-auto">
                 <div className="flex flex-col sm:flex-row gap-4 mb-8 w-full sm:w-auto">
                   <button
-                    onClick={() => setCurrentView('register')}
+                    onClick={() => setCurrentView("register")}
                     className="bg-primary-base hover:bg-primary-hover active:bg-primary-active text-white px-10 py-5 rounded-2xl font-bold text-lg transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 shadow-lg shadow-primary-base/25 group"
                   >
                     {t.hero.getStarted}
-                    {language === 'ar' ? <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" /> : <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                    {language === "ar" ? (
+                      <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                    ) : (
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -171,7 +267,9 @@ export default function HomePage() {
                 {t.hero.benefits.map((benefit: string, idx: number) => (
                   <div key={idx} className="flex items-center gap-2">
                     <Check className="w-4 h-4 shrink-0 text-primary-base" />
-                    <span className="text-sm font-semibold text-text-secondary">{benefit}</span>
+                    <span className="text-sm font-semibold text-text-secondary">
+                      {benefit}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -187,7 +285,7 @@ export default function HomePage() {
               <div className="relative rounded-[2.5rem] border border-border p-4 backdrop-blur-md bg-card shadow-2xl">
                 <div className="aspect-[4/3] rounded-[2rem] overflow-hidden relative bg-secondary">
                   <div
-                    className={`w-full h-full opacity-60 bg-gradient-to-br from-primary-base/20 via-primary-hover/10 to-transparent ${darkMode ? 'mix-blend-lighten' : ''}`}
+                    className={`w-full h-full opacity-60 bg-gradient-to-br from-primary-base/20 via-primary-hover/10 to-transparent ${darkMode ? "mix-blend-lighten" : ""}`}
                   />
                   {/* Floating Elements */}
                   <div className="absolute top-6 left-6 right-6 flex justify-between items-start">
@@ -196,10 +294,16 @@ export default function HomePage() {
                         <div className="w-8 h-8 rounded-full bg-primary-soft flex items-center justify-center">
                           <MessageSquare className="w-4 h-4 text-primary-base" />
                         </div>
-                        <span className="text-xs font-bold uppercase tracking-wider text-heading">WhatsApp AI</span>
+                        <span className="text-xs font-bold uppercase tracking-wider text-heading">
+                          WhatsApp AI
+                        </span>
                       </div>
-                      <p className="text-sm text-text-primary font-medium">"I'd like to book for Tuesday at 3 PM"</p>
-                      <div className="mt-2 text-[10px] text-primary-base font-mono font-bold">AI: Checking availability... Confirmed!</div>
+                      <p className="text-sm text-text-primary font-medium">
+                        &quot;I&apos;d like to book for Tuesday at 3 PM&quot;
+                      </p>
+                      <div className="mt-2 text-[10px] text-primary-base font-mono font-bold">
+                        AI: Checking availability... Confirmed!
+                      </div>
                     </div>
 
                     <div className="bg-primary-base p-4 rounded-2xl shadow-lg shadow-primary-base/30">
@@ -210,8 +314,12 @@ export default function HomePage() {
                   <div className="absolute bottom-6 left-6 right-6">
                     <div className="backdrop-blur-xl p-5 rounded-2xl border border-border bg-card/90 shadow-lg">
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-bold text-heading">Today's Schedule</span>
-                        <span className="text-[10px] text-primary-base/60 font-bold">12 Appointments</span>
+                        <span className="text-sm font-bold text-heading">
+                          Today&apos;s Schedule
+                        </span>
+                        <span className="text-[10px] text-primary-base/60 font-bold">
+                          12 Appointments
+                        </span>
                       </div>
                       <div className="space-y-2">
                         <div className="h-2.5 w-full rounded-full overflow-hidden bg-secondary">
@@ -239,8 +347,12 @@ export default function HomePage() {
       <section id="features" className="py-24 relative bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-heading">{t.landing.features.badge}</h2>
-            <p className="text-lg text-text-secondary">{t.landing.features.description}</p>
+            <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-heading">
+              {t.landing.features.badge}
+            </h2>
+            <p className="text-lg text-text-secondary">
+              {t.landing.features.description}
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -286,54 +398,96 @@ export default function HomePage() {
                   <div className="w-10 h-10 bg-primary-soft rounded-xl flex items-center justify-center mb-4">
                     <UserRound className="text-primary-base w-5 h-5" />
                   </div>
-                  <h4 className="font-bold mb-2 text-heading">{t.landing.multiClinic.singleDoctor}</h4>
-                  <p className="text-sm text-text-secondary">{t.landing.multiClinic.singleDoctorDesc}</p>
+                  <h4 className="font-bold mb-2 text-heading">
+                    {t.landing.multiClinic.singleDoctor}
+                  </h4>
+                  <p className="text-sm text-text-secondary">
+                    {t.landing.multiClinic.singleDoctorDesc}
+                  </p>
                 </div>
                 <div className="p-6 rounded-3xl border border-border bg-card shadow-sm hover:shadow-md transition-shadow">
                   <div className="w-10 h-10 bg-primary-soft rounded-xl flex items-center justify-center mb-4">
                     <Building2 className="text-primary-base w-5 h-5" />
                   </div>
-                  <h4 className="font-bold mb-2 text-heading">{t.landing.multiClinic.multiDoctor}</h4>
-                  <p className="text-sm text-text-secondary">{t.landing.multiClinic.multiDoctorDesc}</p>
+                  <h4 className="font-bold mb-2 text-heading">
+                    {t.landing.multiClinic.multiDoctor}
+                  </h4>
+                  <p className="text-sm text-text-secondary">
+                    {t.landing.multiClinic.multiDoctorDesc}
+                  </p>
                 </div>
                 <div className="col-span-2 p-6 rounded-3xl border border-border bg-card shadow-sm">
-                  <h4 className="font-bold mb-4 text-heading">{t.landing.multiClinic.centralized}</h4>
+                  <h4 className="font-bold mb-4 text-heading">
+                    {t.landing.multiClinic.centralized}
+                  </h4>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-primary-base" />
-                      <span className="text-sm text-text-secondary font-medium">{t.landing.multiClinic.benefit1}</span>
+                      <span className="text-sm text-text-secondary font-medium">
+                        {t.landing.multiClinic.benefit1}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-primary-base" />
-                      <span className="text-sm text-text-secondary font-medium">{t.landing.multiClinic.benefit2}</span>
+                      <span className="text-sm text-text-secondary font-medium">
+                        {t.landing.multiClinic.benefit2}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-primary-base" />
-                      <span className="text-sm text-text-secondary font-medium">{t.landing.multiClinic.benefit3}</span>
+                      <span className="text-sm text-text-secondary font-medium">
+                        {t.landing.multiClinic.benefit3}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-primary-base" />
-                      <span className="text-sm text-text-secondary font-medium">{t.landing.multiClinic.benefit4}</span>
+                      <span className="text-sm text-text-secondary font-medium">
+                        {t.landing.multiClinic.benefit4}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className="justify-center items-center order-1 lg:order-2">
-              <h2 className="text-3xl text-center lg:text-5xl font-bold mb-6 text-heading">{t.landing.multiClinic.title}</h2>
-              <p className="text-lg text-center mb-8 text-text-secondary">{t.landing.multiClinic.description}</p>
+              <h2 className="text-3xl text-center lg:text-5xl font-bold mb-6 text-heading">
+                {t.landing.multiClinic.title}
+              </h2>
+              <p className="text-lg text-center mb-8 text-text-secondary">
+                {t.landing.multiClinic.description}
+              </p>
               <div className="space-y-4">
                 <div className="flex gap-4">
                   <div className="w-6 h-6 justify-center item-center   rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-1">
-                    <Check className={`w-4 h-4 ${darkMode ? 'text-white' : 'text-blue-500'}`} />
+                    <Check
+                      className={`w-4 h-4 ${darkMode ? "text-white" : "text-blue-500"}`}
+                    />
                   </div>
-                  <p className={darkMode ? 'text-blue-100 text-center' : 'text-blue-700 text-center'}>{t.landing.multiClinic.benefit1}</p>
+                  <p
+                    className={
+                      darkMode
+                        ? "text-blue-100 text-center"
+                        : "text-blue-700 text-center"
+                    }
+                  >
+                    {t.landing.multiClinic.benefit1}
+                  </p>
                 </div>
                 <div className="flex gap-4 justify-center item-center  ">
                   <div className="w-6 h-6 justify-center item-center  rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-1">
-                    <Check className={`w-4 h-4 ${darkMode ? 'text-white' : 'text-blue-500'}`} />
+                    <Check
+                      className={`w-4 h-4 ${darkMode ? "text-white" : "text-blue-500"}`}
+                    />
                   </div>
-                  <p className={darkMode ? 'text-blue-100 text-center' : 'text-blue-700 text-center'}>{t.landing.multiClinic.benefit2}</p>
+                  <p
+                    className={
+                      darkMode
+                        ? "text-blue-100 text-center"
+                        : "text-blue-700 text-center"
+                    }
+                  >
+                    {t.landing.multiClinic.benefit2}
+                  </p>
                 </div>
               </div>
             </div>
@@ -345,17 +499,29 @@ export default function HomePage() {
       <section id="how-it-works" className="py-24 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-heading">{t.landing.howItWorks.title}</h2>
-            <p className="text-lg text-text-secondary max-w-2xl mx-auto">{t.landing.howItWorks.description}</p>
+            <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-heading">
+              {t.landing.howItWorks.title}
+            </h2>
+            <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+              {t.landing.howItWorks.description}
+            </p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-12">
             {t.landing.howItWorks.steps.map((item: any, i: number) => (
               <div key={i} className="relative group">
-                <div className="text-7xl font-black mb-6 text-primary-base/5 group-hover:text-primary-base/10 transition-colors duration-500">0{i + 1}</div>
-                <div className={`relative -mt-12 ${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
-                  <h4 className="text-xl font-bold mb-3 text-heading">{item.title}</h4>
-                  <p className="text-text-secondary leading-relaxed">{item.desc}</p>
+                <div className="text-7xl font-black mb-6 text-primary-base/5 group-hover:text-primary-base/10 transition-colors duration-500">
+                  0{i + 1}
+                </div>
+                <div
+                  className={`relative -mt-12 ${language === "ar" ? "pr-2" : "pl-2"}`}
+                >
+                  <h4 className="text-xl font-bold mb-3 text-heading">
+                    {item.title}
+                  </h4>
+                  <p className="text-text-secondary leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -363,15 +529,6 @@ export default function HomePage() {
         </div>
       </section>
 
-
-      <PricingSection
-        language={language}
-        darkMode={darkMode}
-        onSelectPlan={(plan) => {
-          console.log(`Selected ${plan}`);
-          setCurrentView('register');
-        }}
-      />
       <section className="py-24 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="rounded-[4rem] p-12 lg:p-24 text-center relative overflow-hidden bg-primary-base shadow-2xl shadow-primary-base/20">
@@ -379,11 +536,15 @@ export default function HomePage() {
               <div className="absolute top-0 left-0 w-96 h-96 bg-primary-foreground rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
               <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary-active rounded-full blur-[120px] translate-x-1/3 translate-y-1/3" />
             </div>
-            <h2 className="text-4xl lg:text-7xl font-extrabold text-primary-foreground mb-8 relative z-10 tracking-tight">{t.landing.cta.title}</h2>
-            <p className="text-xl text-primary-foreground/90 mb-12 max-w-2xl mx-auto relative z-10 font-medium">{t.landing.cta.description}</p>
+            <h2 className="text-4xl lg:text-7xl font-extrabold text-primary-foreground mb-8 relative z-10 tracking-tight">
+              {t.landing.cta.title}
+            </h2>
+            <p className="text-xl text-primary-foreground/90 mb-12 max-w-2xl mx-auto relative z-10 font-medium">
+              {t.landing.cta.description}
+            </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center relative z-10">
               <button
-                onClick={() => setCurrentView('register')}
+                onClick={() => setCurrentView("register")}
                 className="bg-primary-foreground text-primary-base hover:bg-white px-12 py-6 rounded-2xl font-bold text-xl transition-all hover:scale-105 active:scale-95 shadow-xl"
               >
                 {t.landing.cta.getStarted}

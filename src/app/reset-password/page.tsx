@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useSearchParams, useRouter } from "next/navigation"
@@ -36,15 +36,7 @@ function ResetPasswordForm() {
     const [loading, setLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState("")
     const [success, setSuccess] = useState(false)
-    const [token, setToken] = useState<string | null>(null)
-
-    useEffect(() => {
-        // Extract token from query params
-        const tokenFromUrl = searchParams.get("token")
-        if (tokenFromUrl) {
-            setToken(tokenFromUrl)
-        }
-    }, [searchParams])
+    const tokenHash = searchParams.get("token_hash")
 
     const handleReset = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -64,10 +56,10 @@ function ResetPasswordForm() {
         setErrorMsg("")
 
         try {
-            // If the user provided a token in query params (?token=...), we verify it.
-            if (token) {
+            // Supabase recovery links use 'token_hash' — matches VerifyTokenHashParams
+            if (tokenHash) {
                 const { error: verifyError } = await supabase.auth.verifyOtp({
-                    token,
+                    token_hash: tokenHash,
                     type: 'recovery'
                 })
                 if (verifyError) {
